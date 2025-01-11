@@ -3,7 +3,8 @@ import { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Altima Dashboard | Payment",
-  description: "We are a family with a major focus in both primary and secondary healthcare service.",
+  description:
+    "Convexity is a pioneering technology company that has made significant contributions to the literacy of the financial ecosystem.",
   twitter: {
     card: "summary_large_image",
   },

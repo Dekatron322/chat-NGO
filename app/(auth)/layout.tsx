@@ -4,7 +4,7 @@ import "styles/tailwind.css"
 export const metadata: Metadata = {
   title: "Chats | Convexity Humanitarian Aid Transfer Solution",
   description:
-    "We are an indigenous Facility Management company fully incorporated in Nigeria. We provide services for commercial and residential buildings, �nancial institutions, military, federal and state government, hotels and large corporations",
+    "Convexity is a pioneering technology company that has made significant contributions to the literacy of the financial ecosystem.",
   twitter: {
     card: "summary_large_image",
   },
