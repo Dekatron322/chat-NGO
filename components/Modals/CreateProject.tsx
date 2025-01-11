@@ -52,8 +52,6 @@ const CreatProjectModal = ({ isOpen, closeModal }: CreatProjectModalProps) => {
   const [showErrorNotification, setShowErrorNotification] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  if (!isOpen) return null
-
   const handleCreateProject = async () => {
     const payload = {
       title: projectName,
@@ -112,6 +110,8 @@ const CreatProjectModal = ({ isOpen, closeModal }: CreatProjectModalProps) => {
     console.log("Reminder Sent")
     setIsModalReminderOpen(false)
   }
+
+  if (!isOpen) return null
   return (
     <div>
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 text-[#25396F]">
