@@ -2,7 +2,7 @@ import SideBar from "components/Sidebar/Sidebar"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Altima Dashboard",
+  title: "Chats | Convexity Humanitarian Aid Transfer Solution",
   description: "We are a family with a major focus in both primary and secondary healthcare service.",
   twitter: {
     card: "summary_large_image",
