@@ -150,12 +150,12 @@ const SignIn: React.FC = () => {
                   {loading ? "Logging in..." : "Log in"}
                 </button>
               </div>
-              <Link href="/forgot-password" className="mt-5 flex content-center items-center">
+              <Link href="#" className="mt-5 flex content-center items-center">
                 <p className="text-sm text-[#17CE89]">Forgot Password</p>
               </Link>
               <div className="mt-8 flex w-full items-center gap-2 text-sm">
                 <p>Don’t have an account?</p>
-                <Link href="#" className="text-[#17CE89] hover:underline">
+                <Link href="/signup" className="text-[#17CE89] hover:underline">
                   Create Account
                 </Link>
               </div>
