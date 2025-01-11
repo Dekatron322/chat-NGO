@@ -1,17 +1,12 @@
 "use client"
-import DashboardNav from "components/Navbar/DashboardNav"
-import AltimaCoreOrders from "components/Tables/AltimaCoreOrders"
-import AltimaEliteOrders from "components/Tables/AltimaEliteOrders"
-import CompletedOrders from "components/Tables/CompletedOrders"
 import { useState } from "react"
-import { PiTableDuotone } from "react-icons/pi"
 import { RiArrowDownSLine } from "react-icons/ri"
 import Approved from "./Approved"
 import Pending from "./Pending"
 import Rejected from "./Rejected"
 
 export default function Beneficieries() {
-  const [activeTab, setActiveTab] = useState("elite")
+  const [activeTab, setActiveTab] = useState("core")
 
   return (
     <section className="my-6 h-full w-full rounded-lg shadow-md">

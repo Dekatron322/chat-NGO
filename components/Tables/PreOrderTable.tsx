@@ -1,5 +1,5 @@
-import React, { useState } from "react"
-import { RxCaretSort, RxCross2 } from "react-icons/rx"
+import React, { useEffect, useState } from "react"
+import { RxCaretSort, RxCheck, RxCross2 } from "react-icons/rx"
 import { PiShieldChevronFill, PiShieldPlusFill } from "react-icons/pi"
 import Image from "next/image"
 import { IoMdFunnel } from "react-icons/io"
@@ -7,17 +7,15 @@ import { IoFunnelOutline } from "react-icons/io5"
 import { FaCircleChevronLeft, FaCircleChevronRight } from "react-icons/fa6"
 import Select from "react-select"
 
-import { LiaTimesSolid } from "react-icons/lia"
-import { FiXCircle } from "react-icons/fi"
-import { FaRegCheckCircle } from "react-icons/fa"
-import Dropdown from "components/Dropdown/Dropdown"
 import { RiArrowDownSLine } from "react-icons/ri"
 import clsx from "clsx"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import CreatProjectModal from "components/Modals/CreateProject"
 
 type SortOrder = "asc" | "desc" | null
 type Order = {
+  id: string
   name: string
   total_funded: string
   amount_disbursed: string
@@ -26,76 +24,59 @@ type Order = {
   status: string
 }
 
-type OptionType = {
-  value: string
-  label: string
-}
-
-const options: OptionType[] = [
-  { value: "1", label: "Abia" },
-  { value: "2", label: "Adamawa" },
-  { value: "3", label: "Benuw" },
-  { value: "4", label: "Gombe" },
-  { value: "5", label: "Edo" },
-  { value: "6", label: "Ekiti" },
-  { value: "7", label: "Zamfara" },
-  { value: "8", label: "Yola" },
-  { value: "9", label: "FCT" },
-  { value: "10", label: "Kogi" },
-  { value: "11", label: "Kaduna" },
-  { value: "12", label: "Lagos" },
-  { value: "13", label: "Kwara" },
-  { value: "14", label: "Plateau" },
-  { value: "15", label: "Rivers" },
-  { value: "16", label: "Sokoto" },
-]
-
 const PreOrderTable = () => {
   const [sortColumn, setSortColumn] = useState<string | null>(null)
   const [sortOrder, setSortOrder] = useState<SortOrder>(null)
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [currentPage, setCurrentPage] = useState(1)
   const [searchText, setSearchText] = useState("")
-  const [selectedOptions, setSelectedOptions] = useState<OptionType[]>([])
-
-  const [activeDropdown, setActiveDropdown] = useState<number | null>(null)
-
-  const toggleDropdown = (index: number) => {
-    setActiveDropdown(activeDropdown === index ? null : index)
-  }
+  const [orders, setOrders] = useState<Order[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
 
   const router = useRouter() // Initialize the router
 
-  const handleView = async (event: React.FormEvent<HTMLFormElement>) => {
-    // Redirect to the success page
-    router.push("/projects/project-info")
-  }
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await fetch("https://api.shalomescort.org/project/project/")
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`)
+        }
+        const data = (await response.json()) as Order[]
+        const formattedOrders = data.map((project: any) => ({
+          id: project.id,
+          name: project.title,
+          total_funded: project.total_funded || "N/A",
+          amount_disbursed: project.amount_disbursed || "N/A",
+          amount_spent: project.amount_spent || "N/A",
+          date: new Date(project.pub_date).toLocaleDateString(),
+          status: project.status,
+        }))
 
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false)
+        // Update state only if there are changes
+        if (JSON.stringify(formattedOrders) !== JSON.stringify(orders)) {
+          setOrders(formattedOrders)
+        }
+      } catch (error: any) {
+        setError(error.message)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    // Initial fetch
+    fetchProjects()
+
+    // Polling every 10 seconds
+    const interval = setInterval(fetchProjects, 1000)
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(interval)
+  }, [orders])
+
   const [isModalReminderOpen, setIsModalReminderOpen] = useState(false)
-
-  const handleCancelOrder = () => {
-    setIsModalOpen(true)
-  }
-
-  const handleStatusOrder = () => {
-    setIsStatusModalOpen(true)
-  }
-
-  const confirmStatusChange = () => {
-    console.log("Order canceled")
-    setIsStatusModalOpen(false)
-  }
-
-  const confirmCancellation = () => {
-    console.log("Order canceled")
-    setIsModalOpen(false)
-  }
-
-  const closeReminderModal = () => {
-    setIsModalReminderOpen(false)
-  }
 
   const handleCancelReminderOrder = () => {
     setIsModalReminderOpen(true)
@@ -104,70 +85,6 @@ const PreOrderTable = () => {
   const confirmReminder = () => {
     console.log("Reminder Sent")
     setIsModalReminderOpen(false)
-  }
-
-  const closeModal = () => {
-    setIsModalOpen(false)
-  }
-
-  const closeStatusModal = () => {
-    setIsStatusModalOpen(false)
-  }
-
-  const [orders, setOrders] = useState<Order[]>([
-    {
-      name: "Feed the Poor",
-      total_funded: "$10,050,000",
-      amount_disbursed: "$10,050,000",
-      amount_spent: "$10,050,000",
-      date: "12 Dec, 2022",
-      status: "Ongoing",
-    },
-    {
-      name: "Feed the Poor",
-      total_funded: "$10,050,000",
-      amount_disbursed: "$10,050,000",
-      amount_spent: "$10,050,000",
-      date: "12 Dec, 2022",
-      status: "Ended",
-    },
-    {
-      name: "Feed the Poor",
-      total_funded: "$10,050,000",
-      amount_disbursed: "$10,050,000",
-      amount_spent: "$10,050,000",
-      date: "12 Dec, 2022",
-      status: "Active",
-    },
-    {
-      name: "Feed the Poor",
-      total_funded: "$10,050,000",
-      amount_disbursed: "$10,050,000",
-      amount_spent: "$10,050,000",
-      date: "12 Dec, 2022",
-      status: "Ended",
-    },
-    {
-      name: "Feed the Poor",
-      total_funded: "$10,050,000",
-      amount_disbursed: "$10,050,000",
-      amount_spent: "$10,050,000",
-      date: "12 Dec, 2022",
-      status: "Pause",
-    },
-    {
-      name: "Feed the Poor",
-      total_funded: "$10,050,000",
-      amount_disbursed: "$10,050,000",
-      amount_spent: "$10,050,000",
-      date: "12 Dec, 2022",
-      status: "Ended",
-    },
-  ])
-
-  const doorModelIcons: Record<string, React.ReactNode> = {
-    "Alima Core": <PiShieldChevronFill className="size-5" />,
-    "Alima Elite": <PiShieldPlusFill className="size-5" />,
   }
 
   const getPaymentStyle = (status: string) => {
@@ -208,15 +125,17 @@ const PreOrderTable = () => {
     Object.values(order).some((value) => value.toString().toLowerCase().includes(searchText.toLowerCase()))
   )
 
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>
+  }
+
   const indexOfLastRow = currentPage * rowsPerPage
   const indexOfFirstRow = indexOfLastRow - rowsPerPage
   const currentRows = filteredOrders.slice(indexOfFirstRow, indexOfLastRow)
-  const [selectedOption, setSelectedOption] = useState<string[]>([])
-  const [selectedCurrency, setSelectedCurrency] = useState<string[]>([])
-  const [selectedCountry, setSelectedCountry] = useState<string[]>([])
-  const [isDropdownOpen, setDropdownOpen] = React.useState<boolean>(false)
-  const [isCurDropdownOpen, setIsCurDropdownOpen] = React.useState<boolean>(false)
-  const [isCountryDropdownOpen, setIsCountryDropdownOpen] = React.useState<boolean>(false)
 
   const totalPages = Math.ceil(filteredOrders.length / rowsPerPage)
 
@@ -228,6 +147,29 @@ const PreOrderTable = () => {
   const handleRowsChange = (event: { target: { value: any } }) => {
     setRowsPerPage(Number(event.target.value))
     setCurrentPage(1) // Reset to the first page
+  }
+
+  const handleViewProject = (projectId: string) => {
+    // Store project ID in localStorage
+    localStorage.setItem("projectId", projectId)
+
+    // Redirect to /projects/project-info
+    router.push("/projects/project-info")
+  }
+
+  const toggleDropdown = () => {
+    setDropdownOpen((prev) => !prev)
+  }
+
+  const handleSort = (order: "asc" | "desc") => {
+    setSortOrder(order)
+    const sortedOrders = [...orders].sort((a, b) => {
+      const dateA = new Date(a.date).getTime()
+      const dateB = new Date(b.date).getTime()
+      return order === "asc" ? dateA - dateB : dateB - dateA
+    })
+    setOrders(sortedOrders)
+    setDropdownOpen(false) // Close the dropdown after selecting
   }
 
   return (
@@ -246,11 +188,39 @@ const PreOrderTable = () => {
             />
             {searchText && <RxCross2 onClick={handleCancelSearch} style={{ cursor: "pointer" }} />}
           </div>
+          <div className="relative">
+            <button
+              className="button-oulined flex h-12 items-center gap-2 border-[#707FA3]"
+              type="button"
+              onClick={toggleDropdown}
+            >
+              <IoMdFunnel />
+              <p>Sort By</p>
+            </button>
+            {dropdownOpen && (
+              <div className="absolute left-0 top-full z-10 mt-2 w-40 rounded-md border border-[#707FA3] bg-white shadow-md">
+                <button
+                  className={`flex w-full items-center justify-between px-4 py-2 text-left hover:bg-gray-100 ${
+                    sortOrder === "asc" ? "bg-gray-100 font-semibold" : ""
+                  }`}
+                  onClick={() => handleSort("asc")}
+                >
+                  Old to New
+                  {sortOrder === "asc" && <RxCheck className="text-lg" />}
+                </button>
+                <button
+                  className={`flex w-full items-center justify-between px-4 py-2 text-left hover:bg-gray-100 ${
+                    sortOrder === "desc" ? "bg-gray-100 font-semibold" : ""
+                  }`}
+                  onClick={() => handleSort("desc")}
+                >
+                  New to Old
+                  {sortOrder === "desc" && <RxCheck className="text-lg" />}
+                </button>
+              </div>
+            )}
+          </div>
           <button className="button-oulined border-[#707FA3]" type="button">
-            <IoMdFunnel />
-            <p>Sort By</p>
-          </button>
-          <button onClick={confirmStatusChange} className="button-oulined border-[#707FA3]" type="button">
             <IoFunnelOutline />
             <p>Filter</p>
           </button>
@@ -329,7 +299,7 @@ const PreOrderTable = () => {
           <tbody className="text-[#25396F]">
             {currentRows.map((order, index) => (
               <tr
-                key={index}
+                key={order.id}
                 className={index % 2 === 0 ? "bg-white" : "bg-[#FCFCFE]"} // Alternating row colors
               >
                 <td className="whitespace-nowrap px-4 py-2 text-sm">
@@ -364,9 +334,12 @@ const PreOrderTable = () => {
                   </div>
                 </td>
                 <td className="whitespace-nowrap px-4 py-1 text-sm">
-                  <Link href="/projects/project-info" className="flex items-center gap-2 text-[#17CE89] underline">
+                  <button
+                    onClick={() => handleViewProject(order.id)}
+                    className="flex items-center gap-2 text-[#17CE89] underline"
+                  >
                     View
-                  </Link>
+                  </button>
                 </td>
               </tr>
             ))}
@@ -392,20 +365,6 @@ const PreOrderTable = () => {
               <FaCircleChevronLeft />
             </button>
 
-            {/* <div className="flex items-center gap-2">
-              {Array.from({ length: totalPages }, (_, index) => (
-                <button
-                  key={index + 1}
-                  className={`flex h-[27px] w-[30px] items-center justify-center rounded-md ${
-                    currentPage === index + 1 ? "bg-[#000000] text-white" : "bg-gray-200 text-gray-800"
-                  }`}
-                  onClick={() => changePage(index + 1)}
-                >
-                  {index + 1}
-                </button>
-              ))}
-            </div> */}
-
             <p>
               Showing {currentPage} of {totalPages}
             </p>
@@ -421,191 +380,8 @@ const PreOrderTable = () => {
         </div>
       </div>
 
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="modal-style w-80 rounded-md p-4 shadow-md">
-            <div className="flex justify-between">
-              <h2 className="mb-4 text-lg font-medium">Cancel Order</h2>
-              <LiaTimesSolid onClick={closeModal} className="cursor-pointer" />
-            </div>
-            <div className="my-3 flex w-full items-center justify-center">
-              <img src="/DashboardImages/WarningCircle.png" alt="" />
-            </div>
-            <p className="mb-4 text-center text-xl font-medium">Are you sure you want to cancel this Order</p>
-            <div className="flex w-full justify-between gap-3">
-              <button className="button__primary flex w-full" onClick={confirmCancellation}>
-                <FaRegCheckCircle />
-                <p className="text-sm">Yes, Cancel</p>
-              </button>
-              <button className="button__danger w-full" onClick={closeModal}>
-                <FiXCircle />
-                <p className="text-sm">No, Leave</p>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {isModalReminderOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 text-[#25396F]">
-          <div className="modal-style rounded-md shadow-md sm:w-[620px] ">
-            <div className="flex w-full justify-end px-4 pt-4">
-              <LiaTimesSolid onClick={closeReminderModal} className="cursor-pointer" />{" "}
-            </div>
-
-            <div className="flex w-full justify-center border-b ">
-              <h2 className="mb-4 text-center text-lg font-medium">New Cash Project </h2>
-            </div>
-            <div className="flex flex-col gap-3 p-4">
-              <label>
-                Project name
-                <input
-                  type="text"
-                  id="search"
-                  placeholder="Enter name of Project"
-                  className="h-[46px] w-full rounded-md border bg-transparent px-4 outline-none transition-all duration-300 ease-in-out hover:border-[#17CE89] focus:border-[#17CE89] active:border-2"
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                />
-              </label>
-
-              <Dropdown
-                label="SDG"
-                options={[
-                  "No Poverty",
-                  "Zero Hunger",
-                  "Good Health and well-being",
-                  "Quality Education",
-                  "Gender Equality",
-                  "Clean Water and Sanitation",
-                  "Affordable and clean energy",
-                  "Decent work and Economic Growth",
-                ]}
-                value={selectedOption}
-                onSelect={setSelectedOption}
-                isOpen={isDropdownOpen}
-                toggleDropdown={() => setDropdownOpen(!isDropdownOpen)}
-                isMultiSelect={true} // Use checkboxes for multi-selection
-              />
-
-              <label className="text-sm">
-                Description
-                <textarea
-                  className="h-[120px] w-full rounded-md border  bg-transparent  p-2 px-2 text-sm outline-none focus:outline-none"
-                  placeholder="Enter Your Message Here"
-                ></textarea>
-              </label>
-
-              <Dropdown
-                label="Project Currency"
-                options={["Naira", "Dollar", "Euro", "Kuwait Dinar"]}
-                value={selectedCurrency}
-                onSelect={setSelectedCurrency}
-                isOpen={isCurDropdownOpen}
-                toggleDropdown={() => setIsCurDropdownOpen(!isCurDropdownOpen)}
-                isMultiSelect={true} // Use checkboxes for multi-selection
-              />
-
-              <label>
-                Budget
-                <input
-                  type="number"
-                  id="search"
-                  placeholder="Enter Budget"
-                  className="h-[46px] w-full rounded-md border bg-transparent px-4 outline-none transition-all duration-300 ease-in-out hover:border-[#17CE89] focus:border-[#17CE89] active:border-2"
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                />
-              </label>
-              <div className="grid w-full grid-cols-2 gap-2">
-                <label>
-                  Start date
-                  <input
-                    type="date"
-                    id="search"
-                    placeholder="Start date"
-                    className="h-[46px] w-full rounded-md border bg-transparent px-4 outline-none transition-all duration-300 ease-in-out hover:border-[#17CE89] focus:border-[#17CE89] active:border-2"
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                  />
-                </label>
-                <label>
-                  End date
-                  <input
-                    type="date"
-                    id="search"
-                    placeholder="Enter Budget"
-                    className="h-[46px] w-full rounded-md border bg-transparent px-4 outline-none transition-all duration-300 ease-in-out hover:border-[#17CE89] focus:border-[#17CE89] active:border-2"
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
-                  />
-                </label>
-              </div>
-              <Dropdown
-                label="Country"
-                options={["Nigeria", "Ghana", "China", "Rwanda", "Sychelles", "United Kingdom"]}
-                value={selectedCountry}
-                onSelect={setSelectedCountry}
-                isOpen={isCountryDropdownOpen}
-                toggleDropdown={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
-                isMultiSelect={true} // Use checkboxes for multi-selection
-              />
-              <div className=" my-2 w-full">
-                <label>
-                  Select State
-                  <Select
-                    options={options}
-                    isMulti
-                    className="search-bg text-xs text-black"
-                    value={selectedOptions}
-                    onChange={(selected) => setSelectedOptions(selected as OptionType[])}
-                    placeholder="Select State"
-                  />
-                </label>
-                <p className="text-xs text-[#707FA3]">You can add multiple states/regions</p>
-              </div>
-            </div>
-
-            <div className="flex w-full justify-between gap-3 px-4 pb-4">
-              <button className="button__primary flex w-full" onClick={confirmReminder}>
-                <p>Create Project</p>
-              </button>
-              <button className="w-full rounded-md border" onClick={closeReminderModal}>
-                <p>Cancel</p>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {isStatusModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="modal-style rounded-md shadow-md sm:w-[620px]">
-            <div className="flex justify-between border-b px-4 pt-4">
-              <h2 className="mb-4 text-lg font-medium">Update Status</h2>
-              <LiaTimesSolid onClick={closeStatusModal} className="cursor-pointer" />
-            </div>
-            <div className="p-4">
-              <Dropdown
-                label=""
-                options={["Pending", "Confirmed", "Delivered", "Cancelled"]} // Replace with your dynamic options if needed
-                value={selectedOption} // The state for the selected dropdown value
-                onSelect={setSelectedOption} // The function to update the selected value
-                isOpen={isDropdownOpen} // The state controlling whether the dropdown is open
-                toggleDropdown={() => setDropdownOpen(!isDropdownOpen)} // The function to toggle dropdown open/close
-                disabled={false} // Adjust as needed
-              />
-            </div>
-            <div className="flex w-full justify-between gap-3 px-4 pb-4">
-              <button className="button__secondary w-full" onClick={confirmStatusChange}>
-                <p>Cancel</p>
-              </button>
-              <button className="button__black flex w-full" onClick={closeStatusModal}>
-                <p>Send</p>
-              </button>
-            </div>
-          </div>
-        </div>
+        <CreatProjectModal isOpen={isModalReminderOpen} closeModal={() => setIsModalReminderOpen(false)} />
       )}
     </div>
   )

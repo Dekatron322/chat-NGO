@@ -4,12 +4,12 @@ import React, { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
+import axios from "axios"
 
-import Footer from "components/Footer/Footer"
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined"
 
-const Page: React.FC = () => {
-  const [username, setUsername] = useState("")
+const SignIn: React.FC = () => {
+  const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -19,8 +19,8 @@ const Page: React.FC = () => {
 
   const router = useRouter()
 
-  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(event.target.value)
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value)
   }
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,23 +36,39 @@ const Page: React.FC = () => {
     setLoading(true)
     setError(null)
 
-    setShowSuccessNotification(true)
-    await new Promise((resolve) => setTimeout(resolve, 3000))
+    try {
+      const response = await axios.post("https://api.shalomescort.org/custom-user/sign-in/", {
+        email,
+        password,
+      })
 
-    setLoading(false)
-    router.push("/projects")
-  }
+      // Log the posted data
+      console.log("Data posted:", {
+        email,
+        password,
+      })
 
-  useEffect(() => {
-    if (showSuccessNotification || showErrorNotification) {
-      const timer = setTimeout(() => {
-        setShowSuccessNotification(false)
-        setShowErrorNotification(false)
-      }, 5000)
+      // Handle the response as needed
+      console.log("Login successful:", response.data)
 
-      return () => clearTimeout(timer)
+      const userId = response.data.id
+      localStorage.setItem("id", userId.toString())
+      console.log("User ID set in localStorage:", localStorage.getItem("id")) // Log the value to confirm
+
+      // Redirect based on department
+      setShowSuccessNotification(true)
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      router.push("/projects")
+    } catch (error) {
+      setError("Login failed. Please try again.")
+      console.error("Login error:", error)
+
+      setShowErrorNotification(true)
+      setTimeout(() => setShowErrorNotification(false), 1000)
+    } finally {
+      setLoading(false)
     }
-  }, [showSuccessNotification, showErrorNotification])
+  }
 
   return (
     <section className="relative flex h-screen flex-grow justify-center bg-[#252525]">
@@ -71,7 +87,7 @@ const Page: React.FC = () => {
 
       {/* Foreground Content */}
       <div className="z-10 flex w-full flex-col items-center justify-center">
-        <div className=" flex items-center justify-center">
+        <div className="flex items-center justify-center">
           <img src="/Logo.png" alt="profile" className="max-sm:w-[214px]" />
         </div>
         <h1 className="my-6 text-3xl text-white">Hi, welcome back</h1>
@@ -79,26 +95,26 @@ const Page: React.FC = () => {
           <div className="w-full justify-center p-6 max-sm:px-7">
             <form onSubmit={handleSubmit}>
               <label className="text-sm text-[#222222]">Email Address</label>
-              <div className="search-bg py-auto mb-3 flex h-[52px] items-center justify-between rounded-md px-3   ">
+              <div className="search-bg py-auto mb-3 flex h-[52px] items-center justify-between rounded-md px-3">
                 <div className="flex w-full items-center">
                   <img src="/AuthImages/Group.png" alt="profile" />
                   <input
-                    type="text"
-                    id="username"
-                    placeholder="Shereefadamu001@gmail.com"
+                    type="email"
+                    id="email"
+                    placeholder="chatngo@gmail.com"
                     className="h-[52px] w-full bg-transparent text-sm outline-none focus:outline-none"
                     style={{
                       padding: "0 12px",
                       lineHeight: "53px",
                       height: "53px",
                     }}
-                    value={username}
-                    onChange={handleUsernameChange}
+                    value={email}
+                    onChange={handleEmailChange}
                   />
                 </div>
               </div>
               <label className="text-sm text-[#222222]">Password</label>
-              <div className="search-bg py-auto mb-3 flex h-[52px] items-center justify-between rounded-md px-3  ">
+              <div className="search-bg py-auto mb-3 flex h-[52px] items-center justify-between rounded-md px-3">
                 <div className="flex w-full items-center gap-3">
                   <img src="/AuthImages/Vector.png" alt="profile" />
                   <input
@@ -106,7 +122,6 @@ const Page: React.FC = () => {
                     id="password"
                     placeholder="Enter Password"
                     className="h-[53px] w-full bg-transparent text-sm outline-none focus:outline-none"
-                    style={{ width: "100%" }}
                     value={password}
                     onChange={handlePasswordChange}
                   />
@@ -125,13 +140,14 @@ const Page: React.FC = () => {
                   </button>
                 </div>
               </div>
+              {error && <p className="text-sm text-red-500">{error}</p>}
               <div className="mt-5 flex w-full gap-6">
                 <button
                   type="submit"
                   className="button-primary h-[50px] w-full rounded-md max-sm:h-[45px]"
                   disabled={loading}
                 >
-                  {loading ? "hang on..." : "Log in"}
+                  {loading ? "Logging in..." : "Log in"}
                 </button>
               </div>
               <Link href="/forgot-password" className="mt-5 flex content-center items-center">
@@ -146,10 +162,21 @@ const Page: React.FC = () => {
             </form>
           </div>
         </div>
-        {/* <Footer /> */}
       </div>
+      {showSuccessNotification && (
+        <div className="animation-fade-in absolute bottom-16 m-5  flex h-[50px] w-[339px] transform items-center justify-center gap-2 rounded-md border border-[#0F920F] bg-[#F2FDF2] text-[#0F920F] shadow-[#05420514] md:right-16">
+          <Image src="/check-circle.svg" width={16} height={16} alt="dekalo" />
+          <span className="clash-font text-sm  text-[#0F920F]">Logged up Successfully</span>
+        </div>
+      )}
+      {showErrorNotification && (
+        <div className="animation-fade-in 0 absolute bottom-16  m-5 flex h-[50px] w-[339px] transform items-center justify-center gap-2 rounded-md border border-[#D14343] bg-[#FEE5E5] text-[#D14343] shadow-[#05420514] md:right-16">
+          <Image src="/check-circle-failed.svg" width={16} height={16} alt="dekalo" />
+          <span className="clash-font text-sm  text-[#D14343]">{error}</span>
+        </div>
+      )}
     </section>
   )
 }
 
-export default Page
+export default SignIn

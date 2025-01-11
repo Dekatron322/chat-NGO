@@ -35,11 +35,34 @@ const SignUp: React.FC = () => {
     setLoading(true)
     setError(null)
 
-    setShowSuccessNotification(true)
-    await new Promise((resolve) => setTimeout(resolve, 3000))
+    try {
+      const response = await fetch("https://api.shalomescort.org/custom-user/sign-up/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: username,
+          password1: password,
+        }),
+      })
 
-    setLoading(false)
-    router.push("/projects")
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error("Failed to create an account")
+      }
+
+      setShowSuccessNotification(true)
+      await new Promise((resolve) => setTimeout(resolve, 3000))
+
+      // Navigate to another page after success
+      router.push("/")
+    } catch (error: any) {
+      setError(error.message || "An error occurred")
+      setShowErrorNotification(true)
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -84,7 +107,7 @@ const SignUp: React.FC = () => {
                   <input
                     type="text"
                     id="username"
-                    placeholder="Shereefadamu001@gmail.com"
+                    placeholder="chatngo001@gmail.com"
                     className="h-[52px] w-full bg-transparent text-sm outline-none focus:outline-none"
                     style={{
                       padding: "0 12px",
@@ -130,16 +153,16 @@ const SignUp: React.FC = () => {
                   className="button-primary h-[50px] w-full rounded-md max-sm:h-[45px]"
                   disabled={loading}
                 >
-                  {loading ? "hang on..." : "Log in"}
+                  {loading ? "hang on..." : "Sign Up"}
                 </button>
               </div>
-              <Link href="/forgot-password" className="mt-5 flex content-center items-center">
+              {/* <Link href="/forgot-password" className="mt-5 flex content-center items-center">
                 <p className="text-sm text-[#17CE89]">Forgot Password</p>
-              </Link>
+              </Link> */}
               <div className="mt-8 flex w-full items-center gap-2 text-sm">
-                <p>Don’t have an account?</p>
-                <Link href="#" className="text-[#17CE89] hover:underline">
-                  Create Account
+                <p>already have an account?</p>
+                <Link href="/" className="text-[#17CE89] hover:underline">
+                  Log in
                 </Link>
               </div>
             </form>
@@ -147,6 +170,18 @@ const SignUp: React.FC = () => {
         </div>
         {/* <Footer /> */}
       </div>
+      {showSuccessNotification && (
+        <div className="animation-fade-in absolute bottom-16 m-5  flex h-[50px] w-[339px] transform items-center justify-center gap-2 rounded-md border border-[#0F920F] bg-[#F2FDF2] text-[#0F920F] shadow-[#05420514] md:right-16">
+          <Image src="/check-circle.svg" width={16} height={16} alt="dekalo" />
+          <span className="clash-font text-sm  text-[#0F920F]">Signed up Successfully</span>
+        </div>
+      )}
+      {showErrorNotification && (
+        <div className="animation-fade-in 0 absolute bottom-16  m-5 flex h-[50px] w-[339px] transform items-center justify-center gap-2 rounded-md border border-[#D14343] bg-[#FEE5E5] text-[#D14343] shadow-[#05420514] md:right-16">
+          <Image src="/check-circle-failed.svg" width={16} height={16} alt="dekalo" />
+          <span className="clash-font text-sm  text-[#D14343]">{error}</span>
+        </div>
+      )}
     </section>
   )
 }

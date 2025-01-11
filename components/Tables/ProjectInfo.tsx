@@ -1,11 +1,11 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { RxCaretSort, RxCross2, RxDotsVertical } from "react-icons/rx"
 import { PiShieldChevronFill, PiShieldPlusFill } from "react-icons/pi"
 import Image from "next/image"
 import { IoMdFunnel } from "react-icons/io"
 import { IoFunnelOutline } from "react-icons/io5"
 import { FaCircleChevronLeft, FaCircleChevronRight } from "react-icons/fa6"
-import Select from "react-select"
+import axios from "axios"
 
 import { LiaTimesSolid } from "react-icons/lia"
 import { FiXCircle } from "react-icons/fi"
@@ -18,10 +18,10 @@ import Link from "next/link"
 
 type SortOrder = "asc" | "desc" | null
 type Order = {
-  name: string
-  unit_cost: string
+  product_service: string
+  cost: string
+  maximum_redeemable: string
   tag: string
-  quantity: string
   date: string
   amount: string
 }
@@ -37,13 +37,41 @@ const ProjectInfo = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [currentPage, setCurrentPage] = useState(1)
   const [searchText, setSearchText] = useState("")
-  const [selectedOptions, setSelectedOptions] = useState<OptionType[]>([])
+  const [products, setProducts] = useState<any[]>([]) // Holds products fetched from the API
+  const [error, setError] = useState<string>("") // Error state
 
   const [activeDropdown, setActiveDropdown] = useState<number | null>(null)
 
   const toggleDropdown = (index: number) => {
     setActiveDropdown(activeDropdown === index ? null : index)
   }
+
+  const fetchProjectProducts = async (projectId: string) => {
+    try {
+      const response = await axios.get(`https://api.shalomescort.org/project/project/${projectId}/`)
+      const projectData = response.data
+      const updatedProducts = projectData.products.map((product: any) => ({
+        ...product,
+        amount: (Number(product.quantity) || 0) * (Number(product.cost) || 0), // Fallback to 0 if invalid
+      }))
+
+      setProducts(updatedProducts) // Set products data from the API response
+    } catch (error) {
+      setError("Failed to fetch project data.")
+      console.error("Error fetching project data:", error)
+    }
+  }
+
+  // Use effect to fetch project data when component mounts
+  useEffect(() => {
+    const projectId = localStorage.getItem("projectId") // Retrieve projectId from localStorage
+
+    if (projectId) {
+      fetchProjectProducts(projectId)
+    } else {
+      setError("No project ID found in localStorage.")
+    }
+  }, [])
 
   const router = useRouter() // Initialize the router
 
@@ -95,48 +123,13 @@ const ProjectInfo = () => {
     setIsStatusModalOpen(false)
   }
 
-  const [orders, setOrders] = useState<Order[]>([
-    {
-      name: "Rice",
-      unit_cost: "1,000.00",
-      tag: "Product",
-      quantity: "12",
-      amount: "12,000.00",
-      date: "12 Dec, 2022",
-    },
-    {
-      name: "Beans",
-      unit_cost: "2,000.00",
-      tag: "Service",
-      quantity: "12",
-      amount: "13,000.00",
-      date: "12 Dec, 2022",
-    },
-    {
-      name: "Yam",
-      unit_cost: "3,000.00",
-      tag: "Product",
-      quantity: "12",
-      amount: "14,000.00",
-      date: "12 Dec, 2022",
-    },
-    {
-      name: "Garri",
-      unit_cost: "4,000.00",
-      tag: "Service",
-      quantity: "12",
-      amount: "12,000.00",
-      date: "12 Dec, 2022",
-    },
-  ])
-
   const doorModelIcons: Record<string, React.ReactNode> = {
     "Alima Core": <PiShieldChevronFill className="size-5" />,
     "Alima Elite": <PiShieldPlusFill className="size-5" />,
   }
 
-  const getPaymentStyle = (tag: string) => {
-    switch (tag) {
+  const getPaymentStyle = (product_service: string) => {
+    switch (product_service) {
       case "Service":
         return { backgroundColor: "#F0F9FF", color: "#026AA2" }
       case "Product":
@@ -146,8 +139,8 @@ const ProjectInfo = () => {
     }
   }
 
-  const dotStyle = (paymentStatus: string) => {
-    switch (paymentStatus) {
+  const dotStyle = (product_service: string) => {
+    switch (product_service) {
       case "Service":
         return { backgroundColor: "#026AA2" }
       case "Product":
@@ -163,21 +156,21 @@ const ProjectInfo = () => {
     setSortOrder(isAscending ? "desc" : "asc")
     setSortColumn(column) // Now correctly typed to accept `string`
 
-    const sortedOrders = [...orders].sort((a, b) => {
+    const sortedOrders = [...products].sort((a, b) => {
       if (a[column] < b[column]) return isAscending ? 1 : -1
       if (a[column] > b[column]) return isAscending ? -1 : 1
       return 0
     })
 
-    setOrders(sortedOrders) // Ensure `setOrders` is also correctly typed
+    setProducts(sortedOrders) // Ensure `setOrders` is also correctly typed
   }
 
   const handleCancelSearch = () => {
     setSearchText("")
   }
 
-  const filteredOrders = orders.filter((order) =>
-    Object.values(order).some((value) => value.toString().toLowerCase().includes(searchText.toLowerCase()))
+  const filteredOrders = products.filter((product) =>
+    Object.values(product).some((value) => String(value).toLowerCase().includes(searchText.toLowerCase()))
   )
 
   const indexOfLastRow = currentPage * rowsPerPage
@@ -212,14 +205,6 @@ const ProjectInfo = () => {
             />
             {searchText && <RxCross2 onClick={handleCancelSearch} style={{ cursor: "pointer" }} />}
           </div>
-          <button className="button-oulined border-[#707FA3]" type="button">
-            <IoMdFunnel />
-            <p>Sort By</p>
-          </button>
-          <button onClick={confirmStatusChange} className="button-oulined border-[#707FA3]" type="button">
-            <IoFunnelOutline />
-            <p>Filter</p>
-          </button>
         </div>
         <button className="button-primary-two gap-2" type="button" onClick={handleCancelReminderOrder}>
           <img src="/DashboardImages/excel-file copy.png" alt="Search Icon" />
@@ -242,7 +227,7 @@ const ProjectInfo = () => {
             <tr>
               <th
                 className="flex cursor-pointer items-center gap-2 whitespace-nowrap  bg-[#F7F7F7] p-4 text-sm"
-                onClick={() => toggleSort("name")}
+                onClick={() => toggleSort("product_service")}
               >
                 Name <RxCaretSort />
               </th>
@@ -257,7 +242,7 @@ const ProjectInfo = () => {
               </th>
               <th
                 className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"
-                onClick={() => toggleSort("unit_cost")}
+                onClick={() => toggleSort("cost")}
               >
                 <p className="flex items-center gap-2">
                   Unit Cost (NGN) <RxCaretSort />
@@ -265,7 +250,7 @@ const ProjectInfo = () => {
               </th>
               <th
                 className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"
-                onClick={() => toggleSort("quantity")}
+                onClick={() => toggleSort("amount")}
               >
                 <p className="flex items-center gap-2">
                   Quantity <RxCaretSort />
@@ -284,34 +269,34 @@ const ProjectInfo = () => {
             </tr>
           </thead>
           <tbody className="text-[#25396F]">
-            {currentRows.map((order, index) => (
+            {currentRows.map((product, index) => (
               <tr
                 key={index}
                 className={index % 2 === 0 ? "bg-white" : "bg-[#FCFCFE]"} // Alternating row colors
               >
                 <td className="whitespace-nowrap px-4 py-2 text-sm">
-                  <div className="flex items-center gap-2">{order.name}</div>
+                  <div className="flex items-center gap-2">{product?.tag}</div>
                 </td>
 
                 <td className="whitespace-nowrap px-4 py-3 text-sm">
                   <div className="flex">
                     <div
-                      style={getPaymentStyle(order.tag)}
+                      style={getPaymentStyle(product.product_service)}
                       className="flex items-center justify-center gap-1 rounded-full px-2 py-1"
                     >
-                      <span className="pr-l size-2 rounded-full" style={dotStyle(order.tag)}></span>
-                      {order.tag}
+                      <span className="pr-l size-2 rounded-full" style={dotStyle(product.product_service)}></span>
+                      {product.product_service}
                     </div>
                   </div>
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm">
-                  <div className="flex items-center gap-2 pr-4">{order.amount}</div>
+                  <div className="flex items-center gap-2 pr-4">{product.cost}</div>
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm">
-                  <div className="flex items-center gap-2">{order.unit_cost}</div>
+                  <div className="flex items-center gap-2">{product.quantity || "0"}</div>
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm">
-                  <div className="flex items-center gap-2">{order.amount}</div>
+                  <div className="flex items-center gap-2">{product.amount}</div>
                 </td>
 
                 <td className="whitespace-nowrap px-4 py-1 text-sm">
