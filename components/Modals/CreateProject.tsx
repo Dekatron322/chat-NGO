@@ -34,8 +34,6 @@ type CreatProjectModalProps = {
 }
 
 const CreatProjectModal = ({ isOpen, closeModal }: CreatProjectModalProps) => {
-  if (!isOpen) return null
-
   const [isModalReminderOpen, setIsModalReminderOpen] = useState(false)
   const [isDropdownOpen, setDropdownOpen] = React.useState<boolean>(false)
   const [isCurDropdownOpen, setIsCurDropdownOpen] = React.useState<boolean>(false)
@@ -53,6 +51,8 @@ const CreatProjectModal = ({ isOpen, closeModal }: CreatProjectModalProps) => {
   const [showSuccessNotification, setShowSuccessNotification] = useState(false)
   const [showErrorNotification, setShowErrorNotification] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  if (!isOpen) return null
 
   const handleCreateProject = async () => {
     const payload = {
