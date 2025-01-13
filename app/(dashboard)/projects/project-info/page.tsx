@@ -154,7 +154,7 @@ export default function PreOrder() {
 
                         <div className="mt-5 flex w-full items-center justify-end gap-4">
                           <Link
-                            href=""
+                            href="project-vendors"
                             className="flex items-center justify-center gap-3 rounded-md border-2 border-[#17CE89] px-4 py-2 text-[#17CE89]"
                           >
                             <img src="/DashboardImages/user-tag.png" />

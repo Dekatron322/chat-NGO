@@ -60,11 +60,17 @@ const ProjectSummary = () => {
     }).format(date)
   }
 
+  const calculateBeneficiaryShare = () => {
+    const { budget, beneficiarys } = projectData
+    if (!budget || !beneficiarys?.length) return "N/A" // Handle missing data
+    return `N${(budget / beneficiarys.length).toFixed(2)}`
+  }
+
   return (
     <div className="w-full rounded-lg bg-white p-4 shadow-md xl:w-[400px]">
       <p className="text-sm font-bold">Project Summary</p>
 
-      <div className="mt-3  gap-2 rounded-lg border border-[#53DB92] p-3">
+      <div className="mt-3 gap-2 rounded-lg border border-[#53DB92] p-3">
         <div className="mt-1 flex items-center justify-between">
           <p className="font-semibold text-[#25396F]">{projectData.title}</p>
           <div className="rounded-full bg-[#F5F6F8] p-2">
@@ -89,13 +95,10 @@ const ProjectSummary = () => {
           <p className="text-sm text-[#25396F]">Budget</p>
           <p className="text-sm text-[#25396F]">N{projectData.budget || "N/A"}</p>
         </div>
+
         <div className="flex w-full items-center justify-between border-b py-2">
-          <p className="text-sm text-[#25396F]">Amount Funded</p>
-          <p className="text-sm text-[#25396F]">N{projectData.total_funded || "N/A"}</p>
-        </div>
-        <div className="flex w-full items-center justify-between border-b py-2">
-          <p className="text-sm text-[#25396F]">Criteria</p>
-          <p className="text-sm text-[#25396F]">Equally</p>
+          <p className="text-sm text-[#25396F]">Beneficiary Share</p>
+          <p className="text-sm text-[#25396F]">{calculateBeneficiaryShare()}</p>
         </div>
         <div className="flex w-full items-center justify-between border-b py-2">
           <p className="text-sm text-[#25396F]">Description</p>
@@ -126,8 +129,8 @@ const ProjectSummary = () => {
         <p className="text-[#17CE89]">Project version history</p>
         <img src="/DashboardImages/Vector copy.png" />
       </div>
-      <div className="mt-3  gap-2 rounded-lg border border-[#53DB92] p-3">
-        <div className="flex w-full items-center justify-between  py-2">
+      <div className="mt-3 gap-2 rounded-lg border border-[#53DB92] p-3">
+        <div className="flex w-full items-center justify-between py-2">
           <p className="text-sm text-[#25396F]">Amount Unspent:</p>
           <p className="text-sm text-[#25396F]">NGN180,000.00</p>
         </div>

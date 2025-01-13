@@ -115,20 +115,20 @@ const CreatProjectModal = ({ isOpen, closeModal }: CreatProjectModalProps) => {
   return (
     <div>
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 text-[#25396F]">
-        <div className="modal-style rounded-md shadow-md sm:w-[620px] ">
+        <div className="modal-style max-h-[70vh] overflow-y-auto rounded-md bg-white shadow-md sm:w-[500px]">
           <div className="flex w-full justify-end px-4 pt-4">
-            <LiaTimesSolid onClick={closeModal} className="cursor-pointer" />{" "}
+            <LiaTimesSolid onClick={closeModal} className="cursor-pointer" />
           </div>
 
-          <div className="flex w-full justify-center border-b ">
-            <h2 className="mb-4 text-center text-lg font-medium">New Cash Project </h2>
+          <div className="flex w-full justify-center border-b">
+            <h2 className="mb-4 text-center text-lg font-medium">New Cash Project</h2>
           </div>
           <div className="flex flex-col gap-3 p-4">
+            {/* Input Fields */}
             <label>
               Project name
               <input
                 type="text"
-                id="search"
                 placeholder="Enter name of Project"
                 className="h-[46px] w-full rounded-md border bg-transparent px-4 outline-none transition-all duration-300 ease-in-out hover:border-[#17CE89] focus:border-[#17CE89] active:border-2"
                 value={projectName}
@@ -152,13 +152,13 @@ const CreatProjectModal = ({ isOpen, closeModal }: CreatProjectModalProps) => {
               onSelect={setSdg}
               isOpen={isDropdownOpen}
               toggleDropdown={() => setDropdownOpen(!isDropdownOpen)}
-              isMultiSelect={true} // Use checkboxes for multi-selection
+              isMultiSelect={true}
             />
 
             <label className="text-sm">
               Description
               <textarea
-                className="h-[120px] w-full rounded-md border  bg-transparent  p-2 px-2 text-sm outline-none focus:outline-none"
+                className="h-[120px] w-full rounded-md border bg-transparent p-2 text-sm outline-none focus:outline-none"
                 placeholder="Enter Your Message Here"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -172,27 +172,25 @@ const CreatProjectModal = ({ isOpen, closeModal }: CreatProjectModalProps) => {
               onSelect={setCurrency}
               isOpen={isCurDropdownOpen}
               toggleDropdown={() => setIsCurDropdownOpen(!isCurDropdownOpen)}
-              isMultiSelect={true} // Use checkboxes for multi-selection
+              isMultiSelect={true}
             />
 
             <label>
               Budget
               <input
                 type="number"
-                id="search"
                 placeholder="Enter Budget"
                 className="h-[46px] w-full rounded-md border bg-transparent px-4 outline-none transition-all duration-300 ease-in-out hover:border-[#17CE89] focus:border-[#17CE89] active:border-2"
                 value={budget}
                 onChange={(e) => setBudget(e.target.value)}
               />
             </label>
+
             <div className="grid w-full grid-cols-2 gap-2">
               <label>
                 Start date
                 <input
                   type="date"
-                  id="search"
-                  placeholder="Start date"
                   className="h-[46px] w-full rounded-md border bg-transparent px-4 outline-none transition-all duration-300 ease-in-out hover:border-[#17CE89] focus:border-[#17CE89] active:border-2"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
@@ -202,14 +200,13 @@ const CreatProjectModal = ({ isOpen, closeModal }: CreatProjectModalProps) => {
                 End date
                 <input
                   type="date"
-                  id="search"
-                  placeholder="Enter Budget"
                   className="h-[46px] w-full rounded-md border bg-transparent px-4 outline-none transition-all duration-300 ease-in-out hover:border-[#17CE89] focus:border-[#17CE89] active:border-2"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
                 />
               </label>
             </div>
+
             <Dropdown
               label="Country"
               options={["Nigeria", "Ghana", "China", "Rwanda", "Sychelles", "United Kingdom"]}
@@ -217,9 +214,10 @@ const CreatProjectModal = ({ isOpen, closeModal }: CreatProjectModalProps) => {
               onSelect={setCountry}
               isOpen={isCountryDropdownOpen}
               toggleDropdown={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
-              isMultiSelect={true} // Use checkboxes for multi-selection
+              isMultiSelect={true}
             />
-            <div className=" my-2 w-full">
+
+            <div className="my-2 w-full">
               <label>
                 Select State
                 <Select
@@ -245,6 +243,7 @@ const CreatProjectModal = ({ isOpen, closeModal }: CreatProjectModalProps) => {
           </div>
         </div>
       </div>
+
       {showSuccessNotification && (
         <div className="animation-fade-in fixed bottom-16 m-5  flex h-[50px] w-[339px] transform items-center justify-center gap-2 rounded-md border border-[#0F920F] bg-[#F2FDF2] text-[#0F920F] shadow-[#05420514] md:right-16">
           <Image src="/check-circle.svg" width={16} height={16} alt="dekalo" />

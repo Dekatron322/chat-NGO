@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { RxCaretSort, RxCross2, RxDotsVertical } from "react-icons/rx"
 import { PiShieldChevronFill, PiShieldPlusFill } from "react-icons/pi"
 import Image from "next/image"
-import { IoMdFunnel } from "react-icons/io"
+import { IoMdArrowDropdown, IoMdFunnel } from "react-icons/io"
 import { IoFunnelOutline } from "react-icons/io5"
 import { FaCircleChevronLeft, FaCircleChevronRight } from "react-icons/fa6"
 import Select from "react-select"
@@ -38,62 +38,22 @@ const TransactionsInfo = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [currentPage, setCurrentPage] = useState(1)
   const [searchText, setSearchText] = useState("")
-  const [selectedOptions, setSelectedOptions] = useState<OptionType[]>([])
-
-  const [activeDropdown, setActiveDropdown] = useState<number | null>(null)
-
-  const toggleDropdown = (index: number) => {
-    setActiveDropdown(activeDropdown === index ? null : index)
-  }
-
   const router = useRouter() // Initialize the router
+  const [expandedRow, setExpandedRow] = useState<number | null>(null) // Track which row is expanded
 
-  const handleView = async (event: React.FormEvent<HTMLFormElement>) => {
-    // Redirect to the success page
-    router.push("/projects/project-info")
+  const toggleRow = (index: number) => {
+    setExpandedRow((prev) => (prev === index ? null : index)) // Toggle expanded row
   }
 
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false)
-  const [isModalReminderOpen, setIsModalReminderOpen] = useState(false)
-
-  const handleCancelOrder = () => {
-    setIsModalOpen(true)
-  }
-
-  const handleStatusOrder = () => {
-    setIsStatusModalOpen(true)
-  }
-
-  const confirmStatusChange = () => {
-    console.log("Order canceled")
-    setIsStatusModalOpen(false)
-  }
 
   const confirmCancellation = () => {
     console.log("Order canceled")
     setIsModalOpen(false)
   }
 
-  const closeReminderModal = () => {
-    setIsModalReminderOpen(false)
-  }
-
-  const handleCancelReminderOrder = () => {
-    setIsModalReminderOpen(true)
-  }
-
-  const confirmReminder = () => {
-    console.log("Reminder Sent")
-    setIsModalReminderOpen(false)
-  }
-
   const closeModal = () => {
     setIsModalOpen(false)
-  }
-
-  const closeStatusModal = () => {
-    setIsStatusModalOpen(false)
   }
 
   const [orders, setOrders] = useState<Order[]>([
@@ -134,11 +94,6 @@ const TransactionsInfo = () => {
       date: "Dec 3, 2020 | 12:45 pm",
     },
   ])
-
-  const doorModelIcons: Record<string, React.ReactNode> = {
-    "Alima Core": <PiShieldChevronFill className="size-5" />,
-    "Alima Elite": <PiShieldPlusFill className="size-5" />,
-  }
 
   const getPaymentStyle = (tag: string) => {
     switch (tag) {
@@ -205,7 +160,7 @@ const TransactionsInfo = () => {
   }
 
   return (
-    <div className="flex-3 relative  mb-10 flex flex-col rounded-md">
+    <div className="flex-3 relative  mb-10 mt-6 flex flex-col rounded-md">
       <div className=" w-full overflow-x-auto rounded-[10px] bg-white shadow-md">
         <div className="flex items-center justify-between px-5 py-4 text-[#25396F]">
           <p className="text-lg font-semibold">Project Transactions </p>
@@ -268,44 +223,80 @@ const TransactionsInfo = () => {
           </thead>
           <tbody className="text-[#25396F]">
             {currentRows.map((order, index) => (
-              <tr
-                key={index}
-                className={index % 2 === 0 ? "bg-white" : "bg-[#FCFCFE]"} // Alternating row colors
-              >
-                <td className="whitespace-nowrap px-4 py-2 text-sm">
-                  <div className="flex items-center gap-2">
-                    <img src={order.image} />
-                    {order.beneficiary}
-                  </div>
-                </td>
-
-                <td className="whitespace-nowrap px-4 py-2 text-sm">
-                  <div className="flex items-center gap-2 pr-4">{order.vendor}</div>
-                </td>
-                <td className="whitespace-nowrap px-4 py-2 text-sm">
-                  <div className="flex items-center gap-2">{order.amount}</div>
-                </td>
-                <td className="whitespace-nowrap px-4 py-3 text-sm">
-                  <div className="flex">
-                    <div
-                      style={getPaymentStyle(order.status)}
-                      className="flex items-center justify-center gap-1 rounded-full px-2 py-1"
-                    >
-                      <span className="pr-l size-2 rounded-full" style={dotStyle(order.status)}></span>
-                      {order.status}
+              <React.Fragment key={index}>
+                <tr
+                  key={index}
+                  className={index % 2 === 0 ? "bg-white" : "bg-[#FCFCFE]"} // Alternating row colors
+                >
+                  <td className="whitespace-nowrap px-4 py-2 text-sm">
+                    <div className="flex items-center gap-2">
+                      <img src={order.image} />
+                      {order.beneficiary}
                     </div>
-                  </div>
-                </td>
-                <td className="whitespace-nowrap px-4 py-2 text-sm">
-                  <div className="flex items-center gap-2">{order.date}</div>
-                </td>
+                  </td>
 
-                <td className="whitespace-nowrap px-4 py-1 text-sm">
-                  <div className="flex items-center gap-2">
-                    <RxDotsVertical />
-                  </div>
-                </td>
-              </tr>
+                  <td className="whitespace-nowrap px-4 py-2 text-sm">
+                    <div className="flex items-center gap-2 pr-4">{order.vendor}</div>
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-2 text-sm">
+                    <div className="flex items-center gap-2">{order.amount}</div>
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-3 text-sm">
+                    <div className="flex">
+                      <div
+                        style={getPaymentStyle(order.status)}
+                        className="flex items-center justify-center gap-1 rounded-full px-2 py-1"
+                      >
+                        <span className="pr-l size-2 rounded-full" style={dotStyle(order.status)}></span>
+                        {order.status}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-2 text-sm">
+                    <div className="flex items-center gap-2">{order.date}</div>
+                  </td>
+
+                  <td className="whitespace-nowrap px-4 py-1 text-sm">
+                    <div className="flex cursor-pointer items-center gap-2" onClick={() => toggleRow(index)}>
+                      <IoMdArrowDropdown
+                        className={`transition-transform ${expandedRow === index ? "rotate-180" : ""}`}
+                      />
+                    </div>
+                  </td>
+                </tr>
+                {/* Expanded row */}
+                {expandedRow === index && (
+                  <tr className=" bg-[#F7F7F7]">
+                    <td colSpan={6} className="p-4 text-sm ">
+                      <div className="flex flex-col justify-between gap-4 rounded-lg border border-dashed bg-gray-100 p-4">
+                        <div className="flex w-full justify-between">
+                          <p className="font-semibold">Items/Product</p>
+                          <p className="font-semibold">Quantity</p>
+                          <p className="font-semibold">Unit Cost</p>
+                        </div>
+                        <div className="flex w-full justify-between">
+                          <p className="">Laptop</p>
+                          <p className="">2</p>
+                          <p className="">1000000</p>
+                        </div>
+                        <div className="flex w-full justify-between">
+                          <p className="">Laptop</p>
+                          <p className="">2</p>
+                          <p className="">1000000</p>
+                        </div>
+                      </div>
+                      <div className="mt-3 flex w-full justify-between">
+                        <p>
+                          <span className="font-semibold">Timespan:</span> 19 Apr 2022 12:55:54
+                        </p>
+                        <p>
+                          <span className="font-semibold">Status:</span> Completed
+                        </p>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
             ))}
           </tbody>
         </table>
@@ -328,20 +319,6 @@ const TransactionsInfo = () => {
             >
               <FaCircleChevronLeft />
             </button>
-
-            {/* <div className="flex items-center gap-2">
-              {Array.from({ length: totalPages }, (_, index) => (
-                <button
-                  key={index + 1}
-                  className={`flex h-[27px] w-[30px] items-center justify-center rounded-md ${
-                    currentPage === index + 1 ? "bg-[#000000] text-white" : "bg-gray-200 text-gray-800"
-                  }`}
-                  onClick={() => changePage(index + 1)}
-                >
-                  {index + 1}
-                </button>
-              ))}
-            </div> */}
 
             <p>
               Showing {currentPage} of {totalPages}

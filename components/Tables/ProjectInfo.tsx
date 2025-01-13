@@ -214,7 +214,7 @@ const ProjectInfo = () => {
 
       <div className="mt-6 w-full overflow-x-auto rounded-[10px] bg-white shadow-md">
         <div className="flex items-center justify-between px-5 py-4 text-[#25396F]">
-          <p className="text-lg font-semibold">Products/Services (32)</p>
+          <p className="text-lg font-semibold">Products/Services ({products.length})</p>
           <div className="flex items-center gap-3">
             <p className="text-sm">Filter by:</p>
 
@@ -222,92 +222,94 @@ const ProjectInfo = () => {
             <RiArrowDownSLine />
           </div>
         </div>
-        <table className="w-full min-w-[1000px] border-separate border-spacing-0 text-left">
-          <thead>
-            <tr>
-              <th
-                className="flex cursor-pointer items-center gap-2 whitespace-nowrap  bg-[#F7F7F7] p-4 text-sm"
-                onClick={() => toggleSort("product_service")}
-              >
-                Name <RxCaretSort />
-              </th>
+        {currentRows.some((product) => product.quantity > 0) && (
+          <table className="w-full min-w-[1000px] border-separate border-spacing-0 text-left">
+            <thead>
+              <tr>
+                <th
+                  className="flex cursor-pointer items-center gap-2 whitespace-nowrap  bg-[#F7F7F7] p-4 text-sm"
+                  onClick={() => toggleSort("product_service")}
+                >
+                  Name <RxCaretSort />
+                </th>
 
-              <th
-                className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"
-                onClick={() => toggleSort("tag")}
-              >
-                <p className="flex items-center gap-2">
-                  Tag <RxCaretSort />
-                </p>
-              </th>
-              <th
-                className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"
-                onClick={() => toggleSort("cost")}
-              >
-                <p className="flex items-center gap-2">
-                  Unit Cost (NGN) <RxCaretSort />
-                </p>
-              </th>
-              <th
-                className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"
-                onClick={() => toggleSort("amount")}
-              >
-                <p className="flex items-center gap-2">
-                  Quantity <RxCaretSort />
-                </p>
-              </th>
-              <th
-                className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"
-                onClick={() => toggleSort("amount")}
-              >
-                <p className="flex items-center gap-2">
-                  Amount (NGN) <RxCaretSort />
-                </p>
-              </th>
+                <th
+                  className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"
+                  onClick={() => toggleSort("tag")}
+                >
+                  <p className="flex items-center gap-2">
+                    Tag <RxCaretSort />
+                  </p>
+                </th>
+                <th
+                  className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"
+                  onClick={() => toggleSort("cost")}
+                >
+                  <p className="flex items-center gap-2">
+                    Unit Cost (NGN) <RxCaretSort />
+                  </p>
+                </th>
+                <th
+                  className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"
+                  onClick={() => toggleSort("amount")}
+                >
+                  <p className="flex items-center gap-2">
+                    Quantity <RxCaretSort />
+                  </p>
+                </th>
+                <th
+                  className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"
+                  onClick={() => toggleSort("amount")}
+                >
+                  <p className="flex items-center gap-2">
+                    Amount (NGN) <RxCaretSort />
+                  </p>
+                </th>
 
-              <th className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"></th>
-            </tr>
-          </thead>
-          <tbody className="text-[#25396F]">
-            {currentRows.map((product, index) => (
-              <tr
-                key={index}
-                className={index % 2 === 0 ? "bg-white" : "bg-[#FCFCFE]"} // Alternating row colors
-              >
-                <td className="whitespace-nowrap px-4 py-2 text-sm">
-                  <div className="flex items-center gap-2">{product?.tag}</div>
-                </td>
-
-                <td className="whitespace-nowrap px-4 py-3 text-sm">
-                  <div className="flex">
-                    <div
-                      style={getPaymentStyle(product.product_service)}
-                      className="flex items-center justify-center gap-1 rounded-full px-2 py-1"
-                    >
-                      <span className="pr-l size-2 rounded-full" style={dotStyle(product.product_service)}></span>
-                      {product.product_service}
-                    </div>
-                  </div>
-                </td>
-                <td className="whitespace-nowrap px-4 py-2 text-sm">
-                  <div className="flex items-center gap-2 pr-4">{product.cost}</div>
-                </td>
-                <td className="whitespace-nowrap px-4 py-2 text-sm">
-                  <div className="flex items-center gap-2">{product.quantity || "0"}</div>
-                </td>
-                <td className="whitespace-nowrap px-4 py-2 text-sm">
-                  <div className="flex items-center gap-2">{product.amount}</div>
-                </td>
-
-                <td className="whitespace-nowrap px-4 py-1 text-sm">
-                  <div className="flex items-center gap-2">
-                    <RxDotsVertical />
-                  </div>
-                </td>
+                <th className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="text-[#25396F]">
+              {currentRows.map((product, index) => (
+                <tr
+                  key={index}
+                  className={index % 2 === 0 ? "bg-white" : "bg-[#FCFCFE]"} // Alternating row colors
+                >
+                  <td className="whitespace-nowrap px-4 py-2 text-sm">
+                    <div className="flex items-center gap-2">{product?.tag}</div>
+                  </td>
+
+                  <td className="whitespace-nowrap px-4 py-3 text-sm">
+                    <div className="flex">
+                      <div
+                        style={getPaymentStyle(product.product_service)}
+                        className="flex items-center justify-center gap-1 rounded-full px-2 py-1"
+                      >
+                        <span className="pr-l size-2 rounded-full" style={dotStyle(product.product_service)}></span>
+                        {product.product_service}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-2 text-sm">
+                    <div className="flex items-center gap-2 pr-4">{product.cost}</div>
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-2 text-sm">
+                    <div className="flex items-center gap-2">{product.quantity || "0"}</div>
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-2 text-sm">
+                    <div className="flex items-center gap-2">{product.amount}</div>
+                  </td>
+
+                  <td className="whitespace-nowrap px-4 py-1 text-sm">
+                    <div className="flex items-center gap-2">
+                      <RxDotsVertical />
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center gap-1">
             <p>Items</p>
@@ -327,20 +329,6 @@ const ProjectInfo = () => {
             >
               <FaCircleChevronLeft />
             </button>
-
-            {/* <div className="flex items-center gap-2">
-              {Array.from({ length: totalPages }, (_, index) => (
-                <button
-                  key={index + 1}
-                  className={`flex h-[27px] w-[30px] items-center justify-center rounded-md ${
-                    currentPage === index + 1 ? "bg-[#000000] text-white" : "bg-gray-200 text-gray-800"
-                  }`}
-                  onClick={() => changePage(index + 1)}
-                >
-                  {index + 1}
-                </button>
-              ))}
-            </div> */}
 
             <p>
               Showing {currentPage} of {totalPages}

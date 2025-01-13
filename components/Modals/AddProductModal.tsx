@@ -55,7 +55,7 @@ const AddproductModal = ({ projectId, isOpen, closeModal }: CreateProjectModalPr
 
     const payload = {
       product_service: productService,
-      maximum_redeemable: redeemable,
+      maximum_redeemable: "0",
       category_type: category,
       tag: prodectName,
       cost,
@@ -144,7 +144,7 @@ const AddproductModal = ({ projectId, isOpen, closeModal }: CreateProjectModalPr
                 toggleDropdown={() => setDropdownOpen(!isDropdownOpen)}
               />
 
-              <label>
+              {/* <label>
                 Maximum Redeemable
                 <input
                   type="number"
@@ -153,7 +153,7 @@ const AddproductModal = ({ projectId, isOpen, closeModal }: CreateProjectModalPr
                   onChange={(e) => setRedeemable(e.target.value)}
                   className="w-full rounded-md border bg-transparent px-4 py-2 focus:outline-none"
                 />
-              </label>
+              </label> */}
 
               <label>
                 Name
