@@ -36,15 +36,15 @@ export default function VendorsProfile() {
             </button>
             <div className="max-sm-my-4 flex w-full gap-6 max-md:flex-col max-md:px-0">
               <div className="flex w-full items-start gap-6">
-                <div className="flex w-full flex-col">
-                  <div className="flex w-full gap-6 max-lg:grid max-lg:grid-cols-2"></div>
+                <div className="flex w-[70%] items-start gap-6 max-lg:grid max-lg:grid-cols-2 2xl:w-full">
+                  <div className="flex w-full flex-col ">
+                    <ProjectInfo />
 
-                  <ProjectInfo />
+                    <TransactionsInfo />
+                  </div>
 
-                  <TransactionsInfo />
+                  <BeneProfile />
                 </div>
-
-                <BeneProfile />
               </div>
             </div>
           </div>

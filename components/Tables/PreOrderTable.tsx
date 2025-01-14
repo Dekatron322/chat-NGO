@@ -20,6 +20,7 @@ type Order = {
   total_funded: string
   amount_disbursed: string
   amount_spent: string
+  budget: string
   date: string
   status: string
 }
@@ -47,6 +48,7 @@ const PreOrderTable = () => {
         const data = (await response.json()) as Order[]
         const formattedOrders = data.map((project: any) => ({
           id: project.id,
+          budget: project.budget,
           name: project.title,
           total_funded: project.total_funded || "N/A",
           amount_disbursed: project.amount_disbursed || "N/A",
@@ -306,7 +308,7 @@ const PreOrderTable = () => {
                   <div className="flex items-center gap-2">{order.name}</div>
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm">
-                  <div className="flex items-center gap-2 pr-4">{order.total_funded}</div>
+                  <div className="flex items-center gap-2 pr-4">N{Number(order.budget).toLocaleString("en-NG")}</div>
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm">
                   <div className="flex items-center gap-2">{order.amount_disbursed}</div>

@@ -121,7 +121,7 @@ export default function PreOrder() {
             </div>
             <div className="max-sm-my-4 flex w-full gap-6 max-md:flex-col max-md:px-0">
               <div className="flex w-full items-start gap-6">
-                <div className="flex w-full flex-col">
+                <div className="flex flex-col md:w-[70%] 2xl:w-full">
                   <div className="flex w-full gap-6 max-lg:grid max-lg:grid-cols-2">
                     <div className="flex w-full cursor-pointer gap-2">
                       <div className="small-card rounded-md bg-white p-2 shadow-md transition duration-500">

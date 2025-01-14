@@ -67,7 +67,7 @@ const ProjectSummary = () => {
   }
 
   return (
-    <div className="w-full rounded-lg bg-white p-4 shadow-md xl:w-[400px]">
+    <div className="w-full rounded-lg bg-white p-4 shadow-md 2xl:w-[400px]">
       <p className="text-sm font-bold">Project Summary</p>
 
       <div className="mt-3 gap-2 rounded-lg border border-[#53DB92] p-3">
