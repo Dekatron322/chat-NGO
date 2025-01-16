@@ -70,12 +70,6 @@ const PreOrderTable = () => {
 
     // Initial fetch
     fetchProjects()
-
-    // Polling every 10 seconds
-    const interval = setInterval(fetchProjects, 1000)
-
-    // Cleanup interval on component unmount
-    return () => clearInterval(interval)
   }, [orders])
 
   const [isModalReminderOpen, setIsModalReminderOpen] = useState(false)
@@ -245,7 +239,7 @@ const PreOrderTable = () => {
             <RiArrowDownSLine />
           </div>
         </div>
-        <table className="w-full min-w-[1000px] border-separate border-spacing-0 text-left">
+        <table className="w-full min-w-[800px] border-separate border-spacing-0 text-left">
           <thead>
             <tr>
               <th

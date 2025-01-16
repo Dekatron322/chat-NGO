@@ -1,8 +1,5 @@
 "use client"
 import DashboardNav from "components/Navbar/DashboardNav"
-import { Dash } from "utils"
-import FinanceChart from "components/Chart/FinanceChart"
-import OrdersTable from "components/Tables/OrdersTable"
 import PreOrderTable from "components/Tables/PreOrderTable"
 
 interface PaymentAccount {
@@ -19,7 +16,7 @@ export default function PreOrder() {
         <div className="flex  w-full flex-col">
           <DashboardNav />
           <div className="flex flex-col">
-            <div className="max-sm-my-4 flex w-full gap-6 px-16  max-md:flex-col max-md:px-0 max-sm:px-3 md:my-8">
+            <div className="max-sm-my-4 flex w-full gap-6 px-16  max-2xl:px-6 max-md:flex-col max-md:px-0 max-sm:px-3 md:my-8">
               <div className="w-full">
                 <PreOrderTable />
               </div>

@@ -237,7 +237,7 @@ const Rejected = () => {
   return (
     <div className="flex-3 relative  flex flex-col rounded-md ">
       <div className="mt-6 w-full overflow-x-auto  bg-white shadow-md">
-        <table className="w-full min-w-[1000px] border-separate border-spacing-0 text-left">
+        <table className="w-full min-w-[800px] border-separate border-spacing-0 text-left">
           <thead>
             <tr>
               <th

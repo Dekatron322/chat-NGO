@@ -37,12 +37,11 @@ export default function PreOrder() {
         <div className="flex w-full flex-col">
           <DashboardNav />
 
-          <div className="flex flex-col px-16 max-sm:px-3">
+          <div className="flex flex-col px-16 max-2xl:px-6 max-sm:px-3">
             <button onClick={handleGoBack} className="flex items-center gap-2 md:my-8">
               <img src="/DashboardImages/Group.png" />
               <p className="text-sm">Go back</p>
             </button>
-
             <div className="flex gap-4">
               <div className="flex h-[48px] w-[380px] items-center justify-between gap-3 rounded-md border border-[#707FA3] px-3 py-1 text-[#707070]">
                 <Image src="/DashboardImages/Search.svg" width={16} height={16} alt="Search Icon" />
@@ -65,7 +64,7 @@ export default function PreOrder() {
                 <p>Filter</p>
               </button>
             </div>
-            <div className="max-sm-my-4 flex w-full gap-6 max-md:flex-col max-md:px-0">
+            <div className="max-sm-my-4 flex w-full gap-6  max-md:flex-col">
               <div className="flex w-full items-start gap-6">
                 <div className="flex w-full flex-col">
                   <Beneficieries />

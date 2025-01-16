@@ -91,7 +91,7 @@ export default function PreOrder() {
         <div className="flex w-full flex-col">
           <DashboardNav />
 
-          <div className="flex flex-col px-16 max-sm:px-3">
+          <div className="flex flex-col px-16 max-2xl:px-6 max-sm:px-3">
             <div className="flex items-center gap-2 md:mt-8">
               <p>Project</p>
               <MdOutlineKeyboardArrowRight />

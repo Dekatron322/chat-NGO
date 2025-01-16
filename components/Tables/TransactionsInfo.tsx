@@ -19,6 +19,7 @@ import Link from "next/link"
 type SortOrder = "asc" | "desc" | null
 type Order = {
   beneficiary: string
+  last_name: string
   image: any
   amount: string
   status: string
@@ -58,7 +59,8 @@ const TransactionsInfo = () => {
 
   const [orders, setOrders] = useState<Order[]>([
     {
-      beneficiary: "Janet Woodpecker",
+      beneficiary: "Janet ",
+      last_name: "Woodpecker",
       image: "/DashboardImages/Avatar copy 2.png",
       vendor: "Mutiu Adepoju",
       amount: "NGN25,000",
@@ -67,7 +69,8 @@ const TransactionsInfo = () => {
       date: "Dec 3, 2020 | 12:45 pm",
     },
     {
-      beneficiary: "Janet Woodpecker",
+      beneficiary: "Janet ",
+      last_name: "Woodpecker",
       image: "/DashboardImages/Avatar copy 2.png",
       vendor: "Mutiu Adepoju",
       amount: "NGN25,000",
@@ -76,7 +79,8 @@ const TransactionsInfo = () => {
       date: "Dec 3, 2020 | 12:45 pm",
     },
     {
-      beneficiary: "Janet Woodpecker",
+      beneficiary: "Janet ",
+      last_name: "Woodpecker",
       image: "/DashboardImages/Avatar copy 2.png",
       vendor: "Mutiu Adepoju",
       amount: "NGN25,000",
@@ -85,7 +89,8 @@ const TransactionsInfo = () => {
       date: "Dec 3, 2020 | 12:45 pm",
     },
     {
-      beneficiary: "Janet Woodpecker",
+      beneficiary: "Janet ",
+      last_name: "Woodpecker",
       image: "/DashboardImages/Avatar copy 2.png",
       vendor: "Mutiu Adepoju",
       amount: "NGN25,000",
@@ -175,7 +180,7 @@ const TransactionsInfo = () => {
             </button>
           </div>
         </div>
-        <table className="w-full min-w-[1000px] border-separate border-spacing-0 text-left">
+        <table className="w-full min-w-[800px] border-separate border-spacing-0 text-left">
           <thead>
             <tr>
               <th
@@ -231,7 +236,10 @@ const TransactionsInfo = () => {
                   <td className="whitespace-nowrap px-4 py-2 text-sm">
                     <div className="flex items-center gap-2">
                       <img src={order.image} />
-                      {order.beneficiary}
+                      <div>
+                        <p>{order.beneficiary}</p>
+                        <p>{order.last_name}</p>
+                      </div>
                     </div>
                   </td>
 

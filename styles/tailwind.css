@@ -162,7 +162,7 @@ body {
 }
 
 .small-card {
-  @apply mb-6 h-auto w-full rounded-md   px-[26px] py-6 max-lg:mb-0  max-sm:h-auto max-sm:px-[14px];
+  @apply mb-6 h-auto w-full rounded-md  px-[26px]  py-6 max-2xl:px-3 max-2xl:py-3 max-lg:mb-0  max-sm:h-auto max-sm:px-[14px];
 }
 
 .search-bg {

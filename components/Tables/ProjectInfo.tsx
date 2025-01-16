@@ -223,7 +223,7 @@ const ProjectInfo = () => {
           </div>
         </div>
         {currentRows.some((product) => product.quantity > 0) && (
-          <table className="w-full min-w-[1000px] border-separate border-spacing-0 text-left">
+          <table className="w-full min-w-[600px] border-separate border-spacing-0 text-left">
             <thead>
               <tr>
                 <th
