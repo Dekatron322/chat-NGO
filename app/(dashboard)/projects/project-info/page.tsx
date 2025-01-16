@@ -125,14 +125,14 @@ export default function PreOrder() {
                   <div className="flex w-full gap-6 max-lg:grid max-lg:grid-cols-2">
                     <div className="flex w-full cursor-pointer gap-2">
                       <div className="small-card rounded-md bg-white p-2 shadow-md transition duration-500">
-                        <h5 className="mb-4 font-medium text-[#727272]">Total Beneficiaries</h5>
+                        <h5 className="mb-3 font-medium text-[#727272]">Total Beneficiaries</h5>
                         <div className="flex items-end justify-between">
                           <div className="w-full border-b pb-2">
-                            <h5 className="text-3xl font-medium max-sm:text-lg">{totalBeneficiaries}</h5>
+                            <h5 className="text-3xl font-medium max-2xl:text-xl">{totalBeneficiaries}</h5>
                           </div>
                         </div>
 
-                        <div className="mt-5 flex w-full items-center justify-end gap-4">
+                        <div className="mt-3 flex w-full items-center justify-end gap-4">
                           <Link
                             href="project-beneficieries"
                             className="flex items-center justify-center gap-3 rounded-md border-2 border-[#17CE89] px-4 py-2 text-[#17CE89] transition-all duration-300 ease-out hover:bg-[#EEFCF6]"
@@ -145,14 +145,14 @@ export default function PreOrder() {
                     </div>
                     <div className="flex w-full cursor-pointer gap-2">
                       <div className="small-card rounded-md bg-white p-2 shadow-md transition duration-500">
-                        <h5 className="mb-4 font-medium text-[#727272]">Total Vendors</h5>
+                        <h5 className="mb-3 font-medium text-[#727272]">Total Vendors</h5>
                         <div className="flex items-end justify-between">
                           <div className="w-full border-b pb-2">
-                            <h5 className="text-3xl font-medium max-sm:text-lg">{totalVendors}</h5>
+                            <h5 className="text-3xl font-medium max-2xl:text-xl">{totalVendors}</h5>
                           </div>
                         </div>
 
-                        <div className="mt-5 flex w-full items-center justify-end gap-4">
+                        <div className="mt-3 flex w-full items-center justify-end gap-4">
                           <Link
                             href="project-vendors"
                             className="flex items-center justify-center gap-3 rounded-md border-2 border-[#17CE89] px-4 py-2 text-[#17CE89]"
