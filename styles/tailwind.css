@@ -283,7 +283,7 @@ body {
 }
 
 .button-primary-two {
-  @apply flex h-[48px] items-center justify-center rounded-md bg-[#17CE89] px-2 text-[#FFFFFF] transition-colors hover:bg-[#252525] hover:text-[#FFFFFF] focus:bg-[#2952CC] active:bg-[#061E66]  max-sm:h-10 max-sm:w-full;
+  @apply flex h-[42px] items-center justify-center rounded-md bg-[#17CE89] px-2 text-[#FFFFFF] transition-colors hover:bg-[#252525] hover:text-[#FFFFFF] focus:bg-[#2952CC] active:bg-[#061E66]  max-sm:h-10 max-sm:w-full;
 }
 
 .button__primary {
@@ -315,7 +315,7 @@ body {
 }
 
 .button-oulined {
-  @apply flex h-[348x] items-center gap-2 rounded-md border px-4 text-sm font-medium text-[#000000];
+  @apply flex h-[42px] items-center gap-2 rounded-md border px-4 text-sm font-medium text-[#000000];
 }
 
 .button-rounded {

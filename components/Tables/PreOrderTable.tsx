@@ -172,13 +172,13 @@ const PreOrderTable = () => {
     <div className="flex-3 relative  flex flex-col rounded-md ">
       <div className="flex items-center justify-between ">
         <div className="flex gap-4">
-          <div className="flex h-[48px] w-[380px] items-center justify-between gap-3 rounded-md border border-[#707FA3] px-3 py-1 text-[#707070]">
+          <div className="flex h-[42px] w-[380px] items-center justify-between gap-3 rounded-md border border-[#707FA3] px-3 py-1 text-[#707070]">
             <Image src="/DashboardImages/Search.svg" width={16} height={16} alt="Search Icon" />
             <input
               type="text"
               id="search"
               placeholder="Search"
-              className="h-[46px] w-full bg-transparent outline-none"
+              className="h-[42px] w-full bg-transparent outline-none"
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
             />

@@ -81,46 +81,19 @@ const ProjectInfo = () => {
   }
 
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false)
   const [isModalReminderOpen, setIsModalReminderOpen] = useState(false)
-
-  const handleCancelOrder = () => {
-    setIsModalOpen(true)
-  }
-
-  const handleStatusOrder = () => {
-    setIsStatusModalOpen(true)
-  }
-
-  const confirmStatusChange = () => {
-    console.log("Order canceled")
-    setIsStatusModalOpen(false)
-  }
 
   const confirmCancellation = () => {
     console.log("Order canceled")
     setIsModalOpen(false)
   }
 
-  const closeReminderModal = () => {
-    setIsModalReminderOpen(false)
-  }
-
   const handleCancelReminderOrder = () => {
     setIsModalReminderOpen(true)
   }
 
-  const confirmReminder = () => {
-    console.log("Reminder Sent")
-    setIsModalReminderOpen(false)
-  }
-
   const closeModal = () => {
     setIsModalOpen(false)
-  }
-
-  const closeStatusModal = () => {
-    setIsStatusModalOpen(false)
   }
 
   const doorModelIcons: Record<string, React.ReactNode> = {
@@ -154,7 +127,7 @@ const ProjectInfo = () => {
   const toggleSort = (column: keyof Order) => {
     const isAscending = sortColumn === column && sortOrder === "asc"
     setSortOrder(isAscending ? "desc" : "asc")
-    setSortColumn(column) // Now correctly typed to accept `string`
+    setSortColumn(column)
 
     const sortedOrders = [...products].sort((a, b) => {
       if (a[column] < b[column]) return isAscending ? 1 : -1
@@ -162,7 +135,7 @@ const ProjectInfo = () => {
       return 0
     })
 
-    setProducts(sortedOrders) // Ensure `setOrders` is also correctly typed
+    setProducts(sortedOrders)
   }
 
   const handleCancelSearch = () => {
@@ -183,23 +156,22 @@ const ProjectInfo = () => {
     if (page > 0 && page <= totalPages) setCurrentPage(page)
   }
 
-  // Handle row selection
   const handleRowsChange = (event: { target: { value: any } }) => {
     setRowsPerPage(Number(event.target.value))
-    setCurrentPage(1) // Reset to the first page
+    setCurrentPage(1)
   }
 
   return (
     <div className="flex-3 relative  flex flex-col rounded-md ">
       <div className="flex items-center justify-between ">
         <div className="flex gap-4">
-          <div className="flex h-[48px] w-[380px] items-center justify-between gap-3 rounded-md border border-[#707FA3] px-3 py-1 text-[#707070]">
+          <div className="flex h-[42px] w-[380px] items-center justify-between gap-3 rounded-md border border-[#707FA3] px-3 py-1 text-[#707070]">
             <Image src="/DashboardImages/Search.svg" width={16} height={16} alt="Search Icon" />
             <input
               type="text"
               id="search"
               placeholder="Search"
-              className="h-[46px] w-full bg-transparent outline-none"
+              className="h-[42px] w-full bg-transparent outline-none"
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
             />

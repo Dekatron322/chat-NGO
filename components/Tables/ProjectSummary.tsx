@@ -102,7 +102,13 @@ const ProjectSummary = () => {
         </div>
         <div className="flex w-full items-center justify-between border-b py-2">
           <p className="text-sm text-[#25396F]">Description</p>
-          <p className="text-sm text-[#25396F]">{projectData.description || "N/A"}</p>
+          <p className="text-sm text-[#25396F]">
+            {projectData.description
+              ? projectData.description.length > 10
+                ? `${projectData.description.substring(0, 10)}...` // Truncate and add ellipsis
+                : projectData.description // Show full text if <= 10 characters
+              : "N/A"}
+          </p>
         </div>
         <div className="flex w-full items-center justify-between border-b py-2">
           <p className="text-sm text-[#25396F]">Start date</p>
