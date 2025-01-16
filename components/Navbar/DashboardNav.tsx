@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react"
 import { usePathname } from "next/navigation"
 import axios from "axios"
 import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft"
+import { RxCross2 } from "react-icons/rx"
 
 const DashboardNav = () => {
   const [loading, setLoading] = useState(true)
@@ -107,34 +108,42 @@ const DashboardNav = () => {
       </nav>
 
       {/* Mobile Nav */}
-      <nav className="block border-b bg-[#F2F6FD] px-16 py-4 max-md:px-3 md:hidden">
+      <nav className="block border-b bg-[#EEFCF6] px-16 py-4 max-md:px-3 md:hidden">
         <div className="flex items-center justify-between">
           <FormatAlignLeftIcon onClick={toggleNav} style={{ cursor: "pointer" }} />
           <Link href="/" className="content-center">
-            <Image src="/AuthImages/amd-logo.png" width={150} height={43} alt="dekalo" />
+            <Image src="/Logo.png" width={150} height={43} alt="dekalo" />
           </Link>
           <div className="flex h-[50px] items-center justify-center gap-1 rounded-full bg-[#EDF2F7] px-1">
-            {user && (
-              <div className="flex items-center gap-2">
-                <Image src="/DashboardImages/User.svg" width={40} height={40} alt="avatar" />
-                <Image
-                  className="mr-4"
-                  src="/DashboardImages/dropdown.svg"
-                  width={15.68}
-                  height={15.68}
-                  alt="dropdown"
-                />
-              </div>
-            )}
+            <Image src="/DashboardImages/User.svg" width={40} height={40} alt="avatar" />
+            <Image className="mr-4" src="/DashboardImages/dropdown.svg" width={15.68} height={15.68} alt="avatar" />
           </div>
         </div>
-        {/* Sidebar */}
+
         <div
-          className={`fixed left-0 top-0 z-50 h-full w-[250px] bg-[#044982] transition-transform duration-300 ${
+          className={`fixed left-0 top-0 z-50 h-full w-[250px] bg-[#35C78A] transition-transform duration-300 ${
             isNavOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          {/* Sidebar content */}
+          <div className="flex items-center justify-end p-4">
+            <RxCross2 className="text-white" onClick={toggleNav} style={{ cursor: "pointer" }} />
+          </div>
+          <div className="mt-4 flex flex-col items-start space-y-2 p-4">
+            <Link href="/projects" className={`flex items-center gap-2 pb-4 ${getNavLinkClass("/dashboard")}`}>
+              <Image
+                src={getNavImageSrc("/projects", "/Icons/Graph.svg", "/Icons/Graph-active.svg")}
+                width={20}
+                height={20}
+                alt="avatar"
+              />
+              <p className="mt-1">Projects</p>
+            </Link>
+
+            <Link href="/logout" className="fixed bottom-2 mt-10 flex items-center gap-2 pb-4 text-white">
+              <Image src="/Icons/Logout.svg" width={20} height={20} alt="logout" />
+              <p className="mt-1">Logout</p>
+            </Link>
+          </div>
         </div>
       </nav>
     </>
