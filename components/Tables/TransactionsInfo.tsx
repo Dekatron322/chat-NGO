@@ -1,36 +1,56 @@
-import React, { useState } from "react"
-import { RxCaretSort, RxCross2, RxDotsVertical } from "react-icons/rx"
-import { PiShieldChevronFill, PiShieldPlusFill } from "react-icons/pi"
-import Image from "next/image"
-import { IoMdArrowDropdown, IoMdFunnel } from "react-icons/io"
-import { IoFunnelOutline } from "react-icons/io5"
-import { FaCircleChevronLeft, FaCircleChevronRight } from "react-icons/fa6"
-import Select from "react-select"
-
-import { LiaTimesSolid } from "react-icons/lia"
-import { FiXCircle } from "react-icons/fi"
-import { FaRegCheckCircle } from "react-icons/fa"
-import Dropdown from "components/Dropdown/Dropdown"
+import React, { useEffect, useState } from "react"
+import { RxCaretSort } from "react-icons/rx"
 import { RiArrowDownSLine } from "react-icons/ri"
-import clsx from "clsx"
 import { useRouter } from "next/navigation"
-import Link from "next/link"
+import { IoMdArrowDropdown } from "react-icons/io"
 
 type SortOrder = "asc" | "desc" | null
+
+type Beneficiary = {
+  id: string
+  beneficiary_id: string
+  first_name: string
+  last_name: string
+  gender: string
+  dob: string
+  age: string
+  location: string
+  status: boolean
+  pub_date: string
+}
+
+type Product = {
+  name: string
+  amount: string
+  quantity: string
+}
+
+type Payment = {
+  id: string
+  beneficiarys: Beneficiary[]
+  products: Product[]
+  vendor_name: string
+  amount: string
+  status: boolean
+  pub_date: string
+}
+
+type Project = {
+  id: string
+  title: string
+  sdg: string
+  payments: Payment[]
+}
+
 type Order = {
   beneficiary: string
   last_name: string
-  image: any
+  image: string
+  vendor: string
   amount: string
   status: string
-
   date: string
-  vendor: string
-}
-
-type OptionType = {
-  value: string
-  label: string
+  products: Product[] // Ensure that products are included
 }
 
 const TransactionsInfo = () => {
@@ -39,97 +59,76 @@ const TransactionsInfo = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [currentPage, setCurrentPage] = useState(1)
   const [searchText, setSearchText] = useState("")
-  const router = useRouter() // Initialize the router
+  const [orders, setOrders] = useState<Order[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [expandedRow, setExpandedRow] = useState<number | null>(null) // Track which row is expanded
 
   const toggleRow = (index: number) => {
     setExpandedRow((prev) => (prev === index ? null : index)) // Toggle expanded row
   }
 
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const router = useRouter()
 
-  const confirmCancellation = () => {
-    console.log("Order canceled")
-    setIsModalOpen(false)
-  }
+  useEffect(() => {
+    const projectId = localStorage.getItem("projectId")
 
-  const closeModal = () => {
-    setIsModalOpen(false)
-  }
+    if (projectId) {
+      fetch(`https://api.shalomescort.org/project/project/${projectId}/`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to fetch project data")
+          }
+          return response.json()
+        })
+        .then((data) => {
+          const projectData = data as Project // Type assertion
 
-  const [orders, setOrders] = useState<Order[]>([
-    {
-      beneficiary: "Janet ",
-      last_name: "Woodpecker",
-      image: "/DashboardImages/Avatar copy 2.png",
-      vendor: "Mutiu Adepoju",
-      amount: "NGN25,000",
-      status: "Completed",
+          console.log("Fetched project data:", projectData) // Debug: log raw project data
 
-      date: "Dec 3, 2020 | 12:45 pm",
-    },
-    {
-      beneficiary: "Janet ",
-      last_name: "Woodpecker",
-      image: "/DashboardImages/Avatar copy 2.png",
-      vendor: "Mutiu Adepoju",
-      amount: "NGN25,000",
-      status: "Pending",
+          // Map through payments and extract orders
+          const formattedOrders: Order[] = projectData.payments.map((payment) => {
+            const beneficiary =
+              payment.beneficiarys && payment.beneficiarys.length > 0
+                ? payment.beneficiarys[0] // Use the first beneficiary
+                : null
 
-      date: "Dec 3, 2020 | 12:45 pm",
-    },
-    {
-      beneficiary: "Janet ",
-      last_name: "Woodpecker",
-      image: "/DashboardImages/Avatar copy 2.png",
-      vendor: "Mutiu Adepoju",
-      amount: "NGN25,000",
-      status: "Completed",
+            console.log(`Processing payment ${payment.id}:`, beneficiary)
 
-      date: "Dec 3, 2020 | 12:45 pm",
-    },
-    {
-      beneficiary: "Janet ",
-      last_name: "Woodpecker",
-      image: "/DashboardImages/Avatar copy 2.png",
-      vendor: "Mutiu Adepoju",
-      amount: "NGN25,000",
-      status: "Failed",
+            return {
+              beneficiary: beneficiary ? `${beneficiary.first_name} ${beneficiary.last_name}` : "N/A",
+              last_name: beneficiary?.last_name || "N/A",
+              image: "/path/to/default-avatar.png",
+              vendor: payment.vendor_name || "N/A",
+              amount: `NGN${payment.amount || "0.00"}`,
+              status: payment.status ? "Completed" : "Pending",
+              date: payment.pub_date ? new Date(payment.pub_date).toLocaleString() : "N/A",
+              products: payment.products || [],
+            }
+          })
 
-      date: "Dec 3, 2020 | 12:45 pm",
-    },
-  ])
+          console.log("Formatted orders:", formattedOrders)
+          setOrders(formattedOrders)
+        })
 
-  const getPaymentStyle = (tag: string) => {
-    switch (tag) {
-      case "Completed":
-        return { backgroundColor: "#EEFCF6", color: "#35C78A" }
-      case "Pending":
-        return { backgroundColor: "#FFFDED", color: "#F2994A" }
-      case "Failed":
-        return { backgroundColor: "#FAE8EE", color: "#E42C66" }
-      default:
-        return {}
+        .catch((error) => {
+          setError("Error fetching project payments")
+          console.error("Fetch error:", error) // Debug fetch error
+        })
+        .finally(() => setLoading(false))
+    } else {
+      setError("Project ID not found in localStorage")
+      setLoading(false)
     }
-  }
+  }, [])
 
-  const dotStyle = (paymentStatus: string) => {
-    switch (paymentStatus) {
-      case "Completed":
-        return { backgroundColor: "#35C78A" }
-      case "Pending":
-        return { backgroundColor: "#F2994A" }
-      case "Failed":
-        return { backgroundColor: "#E42C66" }
-      default:
-        return {}
-    }
-  }
+  if (loading) return <p>Loading...</p>
+  if (error) return <p>{error}</p>
 
   const toggleSort = (column: keyof Order) => {
     const isAscending = sortColumn === column && sortOrder === "asc"
     setSortOrder(isAscending ? "desc" : "asc")
-    setSortColumn(column) // Now correctly typed to accept `string`
+    setSortColumn(column)
 
     const sortedOrders = [...orders].sort((a, b) => {
       if (a[column] < b[column]) return isAscending ? 1 : -1
@@ -137,11 +136,7 @@ const TransactionsInfo = () => {
       return 0
     })
 
-    setOrders(sortedOrders) // Ensure `setOrders` is also correctly typed
-  }
-
-  const handleCancelSearch = () => {
-    setSearchText("")
+    setOrders(sortedOrders)
   }
 
   const filteredOrders = orders.filter((order) =>
@@ -158,29 +153,23 @@ const TransactionsInfo = () => {
     if (page > 0 && page <= totalPages) setCurrentPage(page)
   }
 
-  // Handle row selection
-  const handleRowsChange = (event: { target: { value: any } }) => {
+  const handleRowsChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setRowsPerPage(Number(event.target.value))
-    setCurrentPage(1) // Reset to the first page
+    setCurrentPage(1)
   }
 
   return (
-    <div className="flex-3 relative  mb-10 mt-6 flex flex-col rounded-md">
-      <div className=" w-full overflow-x-auto rounded-[10px] bg-white shadow-md">
+    <div className="flex-3 relative mb-10 mt-6 flex flex-col rounded-md">
+      <div className="w-full overflow-x-auto rounded-[10px] bg-white shadow-md">
         <div className="flex items-center justify-between px-5 py-4 text-[#25396F]">
-          <p className="text-lg font-semibold">Project Transactions </p>
+          <p className="text-lg font-semibold">Project Transactions</p>
           <div className="flex items-center gap-3">
             <p className="text-sm">Filter by:</p>
-
             <p className="text-sm">Today</p>
             <RiArrowDownSLine />
-            <button className="flex items-center gap-2 rounded-md border border-[#17CE89] px-4 py-2">
-              <img src="/DashboardImages/excel-file.png" />
-              <p className="text-[#17CE89]">Excel </p>
-            </button>
           </div>
         </div>
-        <table className="w-full min-w-[600px] border-separate border-spacing-0 text-left">
+        <table className="w-full min-w-[800px] border-separate border-spacing-0 text-left">
           <thead>
             <tr>
               <th
@@ -226,16 +215,15 @@ const TransactionsInfo = () => {
               <th className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"></th>
             </tr>
           </thead>
-          <tbody className="text-[#25396F]">
+          <tbody>
             {currentRows.map((order, index) => (
               <React.Fragment key={index}>
                 <tr
-                  key={index}
                   className={index % 2 === 0 ? "bg-white" : "bg-[#FCFCFE]"} // Alternating row colors
                 >
                   <td className="whitespace-nowrap px-4 py-2 text-sm">
                     <div className="flex items-center gap-2">
-                      <img src={order.image} />
+                      {/* <img src={order.image} /> */}
                       {order.beneficiary}
                     </div>
                   </td>
@@ -248,11 +236,8 @@ const TransactionsInfo = () => {
                   </td>
                   <td className="whitespace-nowrap px-4 py-3 text-sm">
                     <div className="flex">
-                      <div
-                        style={getPaymentStyle(order.status)}
-                        className="flex items-center justify-center gap-1 rounded-full px-2 py-1"
-                      >
-                        <span className="pr-l size-2 rounded-full" style={dotStyle(order.status)}></span>
+                      <div className="flex items-center justify-center gap-1 rounded-full px-2 py-1">
+                        <span className="pr-l size-2 rounded-full"></span>
                         {order.status}
                       </div>
                     </div>
@@ -275,28 +260,23 @@ const TransactionsInfo = () => {
                     <td colSpan={6} className="p-4 text-sm ">
                       <div className="flex flex-col justify-between gap-4 rounded-lg border border-dashed bg-gray-100 p-4">
                         <div className="flex w-full justify-between">
-                          <p className="font-semibold">Items/Product</p>
-                          <p className="font-semibold">Quantity</p>
-                          <p className="font-semibold">Unit Cost</p>
+                          <p className="w-1/3 font-semibold">Items/Product</p>
+                          <p className="w-1/3 font-semibold">Quantity</p>
+                          <p className="w-1/3 font-semibold">Unit Cost</p>
                         </div>
-                        <div className="flex w-full justify-between">
-                          <p className="">Laptop</p>
-                          <p className="">2</p>
-                          <p className="">1000000</p>
+                        <div>
+                          {order.products && order.products.length > 0 ? (
+                            order.products.map((product, productIndex) => (
+                              <div className="flex w-full justify-between" key={productIndex}>
+                                <p className="w-1/3">{product.name}</p>
+                                <p className="w-1/3">{product.quantity}</p>
+                                <p className="w-1/3">{product.amount}</p>
+                              </div>
+                            ))
+                          ) : (
+                            <p>No products available</p>
+                          )}
                         </div>
-                        <div className="flex w-full justify-between">
-                          <p className="">Laptop</p>
-                          <p className="">2</p>
-                          <p className="">1000000</p>
-                        </div>
-                      </div>
-                      <div className="mt-3 flex w-full justify-between">
-                        <p>
-                          <span className="font-semibold">Timespan:</span> 19 Apr 2022 12:55:54
-                        </p>
-                        <p>
-                          <span className="font-semibold">Status:</span> Completed
-                        </p>
                       </div>
                     </td>
                   </tr>
@@ -305,65 +285,30 @@ const TransactionsInfo = () => {
             ))}
           </tbody>
         </table>
-        <div className="flex items-center justify-between p-4">
-          <div className="flex items-center gap-1">
-            <p>Items</p>
-            <select value={rowsPerPage} onChange={handleRowsChange} className=" border bg-[#F2F2F2] p-1">
+
+        {/* Pagination */}
+        <div className="flex items-center justify-between px-5 py-4">
+          <div className="flex items-center gap-2">
+            <select value={rowsPerPage} onChange={handleRowsChange}>
               <option value={5}>5</option>
               <option value={10}>10</option>
-              <option value={20}>20</option>
-              <option value={50}>50</option>
+              <option value={15}>15</option>
             </select>
+            <p className="text-sm">Rows per page</p>
           </div>
-
-          <div className="flex items-center ">
-            <button
-              className={`px-2 ${currentPage === 1 ? "cursor-not-allowed text-gray-400" : "text-[#000000]"}`}
-              onClick={() => changePage(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              <FaCircleChevronLeft />
+          <div className="flex items-center gap-3">
+            <button onClick={() => changePage(currentPage - 1)} disabled={currentPage === 1}>
+              Prev
             </button>
-
             <p>
-              Showing {currentPage} of {totalPages}
+              {currentPage} of {totalPages}
             </p>
-
-            <button
-              className={`px-2  ${currentPage === totalPages ? "cursor-not-allowed text-gray-400" : "text-[#000000]"}`}
-              onClick={() => changePage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              <FaCircleChevronRight />
+            <button onClick={() => changePage(currentPage + 1)} disabled={currentPage === totalPages}>
+              Next
             </button>
           </div>
         </div>
       </div>
-
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="modal-style w-80 rounded-md p-4 shadow-md">
-            <div className="flex justify-between">
-              <h2 className="mb-4 text-lg font-medium">Cancel Order</h2>
-              <LiaTimesSolid onClick={closeModal} className="cursor-pointer" />
-            </div>
-            <div className="my-3 flex w-full items-center justify-center">
-              <img src="/DashboardImages/WarningCircle.png" alt="" />
-            </div>
-            <p className="mb-4 text-center text-xl font-medium">Are you sure you want to cancel this Order</p>
-            <div className="flex w-full justify-between gap-3">
-              <button className="button__primary flex w-full" onClick={confirmCancellation}>
-                <FaRegCheckCircle />
-                <p className="text-sm">Yes, Cancel</p>
-              </button>
-              <button className="button__danger w-full" onClick={closeModal}>
-                <FiXCircle />
-                <p className="text-sm">No, Leave</p>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
