@@ -180,7 +180,7 @@ const TransactionsInfo = () => {
             </button>
           </div>
         </div>
-        <table className="w-full min-w-[800px] border-separate border-spacing-0 text-left">
+        <table className="w-full min-w-[600px] border-separate border-spacing-0 text-left">
           <thead>
             <tr>
               <th
@@ -236,10 +236,7 @@ const TransactionsInfo = () => {
                   <td className="whitespace-nowrap px-4 py-2 text-sm">
                     <div className="flex items-center gap-2">
                       <img src={order.image} />
-                      <div>
-                        <p>{order.beneficiary}</p>
-                        <p>{order.last_name}</p>
-                      </div>
+                      {order.beneficiary}
                     </div>
                   </td>
 
