@@ -221,7 +221,7 @@ const TransactionsInfo = () => {
                 <tr
                   className={index % 2 === 0 ? "bg-white" : "bg-[#FCFCFE]"} // Alternating row colors
                 >
-                  <td className="whitespace-nowrap px-4 py-2 text-sm">
+                  <td className=" px-4 py-2 text-sm">
                     <div className="flex items-center gap-2">
                       {/* <img src={order.image} /> */}
                       {order.beneficiary}
@@ -242,7 +242,7 @@ const TransactionsInfo = () => {
                       </div>
                     </div>
                   </td>
-                  <td className="whitespace-nowrap px-4 py-2 text-sm">
+                  <td className="px-4 py-2 text-sm">
                     <div className="flex items-center gap-2">{order.date}</div>
                   </td>
 
