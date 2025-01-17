@@ -166,7 +166,7 @@ export default function PreOrder() {
                   </div>
 
                   <ProjectInfo />
-                  <TabTable />
+                  {/* <TabTable /> */}
                   <TransactionsInfo />
                 </div>
 

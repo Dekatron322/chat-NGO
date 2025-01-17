@@ -85,7 +85,7 @@ export default function BeneficiaryProfile() {
                   </div>
 
                   <ProjectInfo />
-                  <TabTable />
+                  {/* <TabTable /> */}
                   <TransactionsInfo />
                 </div>
 

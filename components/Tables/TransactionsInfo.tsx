@@ -236,9 +236,9 @@ const TransactionsInfo = () => {
                   </td>
                   <td className="whitespace-nowrap px-4 py-3 text-sm">
                     <div className="flex">
-                      <div className="flex items-center justify-center gap-1 rounded-full px-2 py-1">
-                        <span className="pr-l size-2 rounded-full"></span>
-                        {order.status}
+                      <div className="flex items-center justify-center gap-2 rounded-full bg-[#EEFCF6] px-2 py-1 text-[#35C78A]">
+                        <span className="pr-l size-2 h-2 w-2 rounded-full bg-[#35C78A]"></span>
+                        Completed
                       </div>
                     </div>
                   </td>
@@ -293,6 +293,10 @@ const TransactionsInfo = () => {
               <option value={5}>5</option>
               <option value={10}>10</option>
               <option value={15}>15</option>
+              <option value={20}>20</option>
+              <option value={25}>25</option>
+              <option value={30}>30</option>
+              <option value={100}>100</option>
             </select>
             <p className="text-sm">Rows per page</p>
           </div>
