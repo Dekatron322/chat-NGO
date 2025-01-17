@@ -169,7 +169,7 @@ const TransactionsInfo = () => {
             <RiArrowDownSLine />
           </div>
         </div>
-        <table className="w-full min-w-[800px] border-separate border-spacing-0 text-left">
+        <table className="w-full min-w-[600px] border-separate border-spacing-0 text-left">
           <thead>
             <tr>
               <th
