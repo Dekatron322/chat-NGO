@@ -146,7 +146,7 @@ const Approved = () => {
   return (
     <div className="flex-3 relative  flex flex-col rounded-md ">
       <div className="mb-6 flex gap-4">
-        <div className="flex h-[42px] w-[380px] items-center justify-between gap-3 rounded-md border border-[#707FA3] px-3 py-1 text-[#707070]">
+        <div className="flex h-[42px] w-[380px] items-center justify-between gap-3 rounded-md border border-[#707FA3] px-3 py-1 text-[#707070] max-2xl:w-[300px]">
           <Image src="/DashboardImages/Search.svg" width={16} height={16} alt="Search Icon" />
           <input
             type="text"
