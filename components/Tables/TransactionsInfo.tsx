@@ -44,7 +44,7 @@ type Project = {
 
 type Order = {
   beneficiary: string
-  last_name: string
+  // last_name: string
   image: string
   vendor: string
   amount: string
@@ -96,8 +96,8 @@ const TransactionsInfo = () => {
             console.log(`Processing payment ${payment.id}:`, beneficiary)
 
             return {
-              beneficiary: beneficiary ? `${beneficiary.first_name} ${beneficiary.last_name}` : "N/A",
-              last_name: beneficiary?.last_name || "N/A",
+              beneficiary: beneficiary ? `${beneficiary.first_name}` : "N/A",
+              // last_name: "",
               image: "/path/to/default-avatar.png",
               vendor: payment.vendor_name || "N/A",
               amount: `NGN${payment.amount || "0.00"}`,
