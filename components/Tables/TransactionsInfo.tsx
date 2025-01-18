@@ -238,7 +238,7 @@ const TransactionsInfo = () => {
                     <div className="flex">
                       <div className="flex items-center justify-center gap-2 rounded-full bg-[#EEFCF6] px-2 py-1 text-[#35C78A]">
                         <span className="pr-l size-2 h-2 w-2 rounded-full bg-[#35C78A]"></span>
-                        Completed
+                        Success
                       </div>
                     </div>
                   </td>
