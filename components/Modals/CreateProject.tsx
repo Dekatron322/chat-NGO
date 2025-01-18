@@ -63,7 +63,7 @@ const CreatProjectModal = ({ isOpen, closeModal }: CreatProjectModalProps) => {
       end_date: endDate,
       country: country.join(", "),
       state: selectedStates.map((state) => state.label).join(", "),
-      status: "Active",
+      status: "ACTIVE",
       pub_date: new Date().toISOString(),
     }
 
