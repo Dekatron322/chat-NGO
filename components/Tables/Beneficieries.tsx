@@ -23,7 +23,7 @@ export default function Beneficieries() {
 
         <div className="flex  w-full flex-col">
           <div className="flex flex-col">
-            <div className="max-sm-my-4 flex w-full gap-6 max-md:flex-col max-md:px-0 ">
+            <div className="max-sm-my-4 mb-10 flex w-full gap-6 max-md:flex-col max-md:px-0 ">
               {activeTab === "core" && (
                 <div className="w-full">
                   <Approved />

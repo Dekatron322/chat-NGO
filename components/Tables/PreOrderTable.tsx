@@ -302,10 +302,10 @@ const PreOrderTable = () => {
                   <div className="flex items-center gap-2">{order.name}</div>
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm">
-                  <div className="flex items-center gap-2 pr-4">N{Number(order.budget).toLocaleString("en-NG")}</div>
+                  <div className="flex items-center gap-2 pr-4">₦{Number(order.budget).toLocaleString("en-NG")}</div>
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm">
-                  <div className="flex items-center gap-2">{order.amount_disbursed}</div>
+                  <div className="flex items-center gap-2">₦{Number(order.budget).toLocaleString("en-NG")}</div>
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm">
                   <div className="flex items-center gap-2">{order.amount_spent}</div>

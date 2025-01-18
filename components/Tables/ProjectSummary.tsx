@@ -63,7 +63,7 @@ const ProjectSummary = () => {
   const calculateBeneficiaryShare = () => {
     const { budget, beneficiarys } = projectData
     if (!budget || !beneficiarys?.length) return "N/A" // Handle missing data
-    return `N${(budget / beneficiarys.length).toFixed(2)}`
+    return `₦${(budget / beneficiarys.length).toFixed(2)}`
   }
 
   return (
@@ -93,7 +93,7 @@ const ProjectSummary = () => {
 
         <div className="flex w-full items-center justify-between border-b py-2">
           <p className="text-sm text-[#25396F]">Budget</p>
-          <p className="text-sm text-[#25396F]">N{projectData.budget || "N/A"}</p>
+          <p className="text-sm text-[#25396F]">₦{Number(projectData.budget).toLocaleString("en-NG")}</p>
         </div>
 
         <div className="flex w-full items-center justify-between border-b py-2">
