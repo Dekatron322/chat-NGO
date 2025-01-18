@@ -103,9 +103,9 @@ const ProjectInfo = () => {
 
   const getPaymentStyle = (product_service: string) => {
     switch (product_service) {
-      case "Service":
+      case "PRODUCT":
         return { backgroundColor: "#F0F9FF", color: "#026AA2" }
-      case "Product":
+      case "SERVICE":
         return { backgroundColor: "#F8F9FC", color: "#363F72" }
       default:
         return {}
@@ -114,9 +114,9 @@ const ProjectInfo = () => {
 
   const dotStyle = (product_service: string) => {
     switch (product_service) {
-      case "Service":
+      case "PRODUCT":
         return { backgroundColor: "#026AA2" }
-      case "Product":
+      case "SERVICE":
         return { backgroundColor: "#363F72" }
 
       default:

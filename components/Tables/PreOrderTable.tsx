@@ -85,13 +85,13 @@ const PreOrderTable = () => {
 
   const getPaymentStyle = (status: string) => {
     switch (status) {
-      case "Ongoing":
+      case "ONGOING":
         return { backgroundColor: "#E2F1FD", color: "#53A6EB" }
-      case "Ended":
+      case "ENDED":
         return { backgroundColor: "#FAE8EE", color: "#E42C66" }
-      case "Active":
+      case "ACTIVE":
         return { backgroundColor: "#EEFCF6", color: "#35C78A" }
-      case "Pause":
+      case "PAUSE":
         return { backgroundColor: "#E2F1FD", color: "#53A6EB" }
 
       default:
@@ -298,7 +298,7 @@ const PreOrderTable = () => {
                 key={order.id}
                 className={index % 2 === 0 ? "bg-white" : "bg-[#FCFCFE]"} // Alternating row colors
               >
-                <td className="whitespace-nowrap px-4 py-2 text-sm">
+                <td className="px-4 py-2 text-sm">
                   <div className="flex items-center gap-2">{order.name}</div>
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm">
