@@ -226,7 +226,7 @@ const PreOrderTable = () => {
           <p>Create Project</p>
         </button>
       </div>
-      <div className="my-8  w-40 border-b-4 border-b-[#17CE89] pb-2 text-center text-[#17CE89]">
+      <div className="my-8  w-40 border-b-3 border-b-[#17CE89] pb-2 text-center text-[#17CE89]">
         <h1 className="text-lg font-semibold">Cash Project</h1>
       </div>
       <div className="w-full overflow-x-auto rounded-[10px] bg-white shadow-md">
@@ -308,7 +308,7 @@ const PreOrderTable = () => {
                   <div className="flex items-center gap-2">₦{Number(order.budget).toLocaleString("en-NG")}</div>
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm">
-                  <div className="flex items-center gap-2">{order.amount_spent}</div>
+                  <div className="flex items-center gap-2">₦{Number(order.amount_spent).toLocaleString("en-NG")}</div>
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm">
                   <div className="flex items-center gap-2">{order.date}</div>
