@@ -289,7 +289,7 @@ const Approved = () => {
                     <div className="flex items-center gap-2 pr-4">email</div>
                   </td> */}
                   <td className="whitespace-nowrap px-4 py-2 text-sm">
-                    <div className="flex items-center gap-2 pr-4">{order.age2}</div>
+                    <div className="flex items-center gap-2 pr-4">{order.dob}</div>
                   </td>
 
                   {/* <td className="whitespace-nowrap px-4 py-3 text-sm">
