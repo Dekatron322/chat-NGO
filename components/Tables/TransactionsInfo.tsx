@@ -32,7 +32,7 @@ type Payment = {
   vendor_name: string
   amount: string
   status: boolean
-  pub_date: string
+  date: string
 }
 
 type Project = {
@@ -102,7 +102,7 @@ const TransactionsInfo = () => {
               vendor: payment.vendor_name || "N/A",
               amount: `NGN${payment.amount || "0.00"}`,
               status: payment.status ? "Completed" : "Pending",
-              date: payment.pub_date ? new Date(payment.pub_date).toLocaleString() : "N/A",
+              date: payment.date ? new Date(payment.date).toLocaleString() : "N/A",
               products: payment.products || [],
             }
           })

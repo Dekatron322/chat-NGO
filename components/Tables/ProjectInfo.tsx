@@ -269,7 +269,7 @@ const ProjectInfo = () => {
                     <div className="flex items-center gap-2">{product.quantity || "0"}</div>
                   </td>
                   <td className="whitespace-nowrap px-4 py-2 text-sm">
-                    <div className="flex items-center gap-2">{product.amount}</div>
+                    <div className="flex items-center gap-2">₦{Number(product.amount).toLocaleString("en-NG")}</div>
                   </td>
 
                   <td className="whitespace-nowrap px-4 py-1 text-sm">

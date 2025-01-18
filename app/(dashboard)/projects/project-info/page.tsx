@@ -148,13 +148,13 @@ export default function PreOrder() {
                         <h5 className="mb-3 font-medium text-[#727272]">Total Vendors</h5>
                         <div className="flex items-end justify-between">
                           <div className="w-full border-b pb-2">
-                            <h5 className="text-3xl font-medium max-2xl:text-xl">{totalVendors}</h5>
+                            <h5 className="text-3xl font-medium max-2xl:text-xl">1</h5>
                           </div>
                         </div>
 
                         <div className="mt-3 flex w-full items-center justify-end gap-4">
                           <Link
-                            href="project-vendors"
+                            href="#"
                             className="flex items-center justify-center gap-3 rounded-md border-2 border-[#17CE89] px-4 py-2 text-[#17CE89]"
                           >
                             <img src="/DashboardImages/user-tag.png" />
