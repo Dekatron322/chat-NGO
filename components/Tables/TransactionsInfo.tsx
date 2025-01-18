@@ -44,7 +44,7 @@ type Project = {
 
 type Order = {
   beneficiary: string
-  // last_name: string
+  last_name: string
   image: string
   vendor: string
   amount: string
@@ -82,38 +82,53 @@ const TransactionsInfo = () => {
           return response.json()
         })
         .then((data) => {
-          const projectData = data as Project // Type assertion
+          const projectData = data as Project
 
-          console.log("Fetched project data:", projectData) // Debug: log raw project data
+          console.log("Fetched project data:", projectData)
+
+          // Use a Set to track unique names
+          const uniqueNames = new Set<string>()
 
           // Map through payments and extract orders
-          const formattedOrders: Order[] = projectData.payments.map((payment) => {
-            const beneficiary =
-              payment.beneficiarys && payment.beneficiarys.length > 0
-                ? payment.beneficiarys[0] // Use the first beneficiary
-                : null
+          const formattedOrders: Order[] = projectData.payments
+            .map((payment) => {
+              const beneficiary =
+                payment.beneficiarys && payment.beneficiarys.length > 0
+                  ? payment.beneficiarys[0] // Use the first beneficiary
+                  : null
 
-            console.log(`Processing payment ${payment.id}:`, beneficiary)
+              // Check if first name and last name are the same
+              const fullName =
+                beneficiary && beneficiary.first_name === beneficiary.last_name
+                  ? beneficiary.first_name // If the first name and last name are the same, only use first_name
+                  : `${beneficiary?.first_name} ${beneficiary?.last_name}`
 
-            return {
-              beneficiary: beneficiary ? `${beneficiary.first_name}` : "N/A",
-              // last_name: "",
-              image: "/path/to/default-avatar.png",
-              vendor: payment.vendor_name || "N/A",
-              amount: `NGN${payment.amount || "0.00"}`,
-              status: payment.status ? "Completed" : "Pending",
-              date: payment.date ? new Date(payment.date).toLocaleString() : "N/A",
-              products: payment.products || [],
-            }
-          })
+              // Check for duplicates
+              if (fullName !== "N/A" && uniqueNames.has(fullName)) {
+                return null // Skip duplicate names
+              }
 
-          console.log("Formatted orders:", formattedOrders)
+              uniqueNames.add(fullName) // Add the name to the set
+
+              return {
+                beneficiary: fullName,
+                last_name: beneficiary?.last_name || "N/A",
+                image: "/path/to/default-avatar.png",
+                vendor: payment.vendor_name || "N/A",
+                amount: `NGN${payment.amount || "0.00"}`,
+                status: payment.status ? "Completed" : "Pending",
+                date: payment.date ? new Date(payment.date).toLocaleString() : "N/A",
+                products: payment.products || [],
+              }
+            })
+            .filter((order) => order !== null) as Order[] // Remove nulls from the result
+
+          console.log("Formatted orders without duplicates:", formattedOrders)
           setOrders(formattedOrders)
         })
-
         .catch((error) => {
           setError("Error fetching project payments")
-          console.error("Fetch error:", error) // Debug fetch error
+          console.error("Fetch error:", error)
         })
         .finally(() => setLoading(false))
     } else {
