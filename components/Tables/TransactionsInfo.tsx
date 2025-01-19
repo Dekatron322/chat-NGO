@@ -110,6 +110,11 @@ const TransactionsInfo = () => {
 
               uniqueNames.add(fullName) // Add the name to the set
 
+              // Format date without time
+              const formattedDate = payment.date
+                ? new Date(payment.date).toLocaleDateString() // Only show the date (e.g., 27/12/2024)
+                : "N/A"
+
               return {
                 beneficiary: fullName,
                 last_name: beneficiary?.last_name || "N/A",
@@ -117,7 +122,7 @@ const TransactionsInfo = () => {
                 vendor: payment.vendor_name || "N/A",
                 amount: `NGN${payment.amount || "0.00"}`,
                 status: payment.status ? "Completed" : "Pending",
-                date: payment.date ? new Date(payment.date).toLocaleString() : "N/A",
+                date: formattedDate, // Update here
                 products: payment.products || [],
               }
             })
