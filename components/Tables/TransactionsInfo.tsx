@@ -279,7 +279,7 @@ const TransactionsInfo = () => {
                   <tr className=" bg-[#F7F7F7]">
                     <td colSpan={6} className="p-4 text-sm ">
                       <div className="flex flex-col justify-between gap-4 rounded-lg border border-dashed bg-gray-100 p-4">
-                        <div className="flex w-full justify-between">
+                        <div className="flex w-full justify-between gap-10">
                           <p className="w-1/3 font-semibold">Items/Product</p>
                           <p className="w-1/3 font-semibold">Quantity</p>
                           <p className="w-1/3 font-semibold">Unit Cost</p>
@@ -287,7 +287,7 @@ const TransactionsInfo = () => {
                         <div>
                           {order.products && order.products.length > 0 ? (
                             order.products.map((product, productIndex) => (
-                              <div className="flex w-full justify-between" key={productIndex}>
+                              <div className="flex w-full justify-between gap-10" key={productIndex}>
                                 <p className="w-1/3">{product.name}</p>
                                 <p className="w-1/3">{product.quantity}</p>
                                 <p className="w-1/3">{product.amount}</p>
