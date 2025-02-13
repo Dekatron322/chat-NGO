@@ -37,7 +37,7 @@ const SignIn: React.FC = () => {
     setError(null)
 
     try {
-      const response = await axios.post("https://api.shalomescort.org/custom-user/sign-in/", {
+      const response = await axios.post("https://api.donorsrec.chats.cash/custom-user/sign-in/", {
         email,
         password,
       })
@@ -166,7 +166,7 @@ const SignIn: React.FC = () => {
       {showSuccessNotification && (
         <div className="animation-fade-in absolute bottom-16 m-5  flex h-[50px] w-[339px] transform items-center justify-center gap-2 rounded-md border border-[#0F920F] bg-[#F2FDF2] text-[#0F920F] shadow-[#05420514] md:right-16">
           <Image src="/check-circle.svg" width={16} height={16} alt="dekalo" />
-          <span className="clash-font text-sm  text-[#0F920F]">Logged up Successfully</span>
+          <span className="clash-font text-sm  text-[#0F920F]">Logged in Successfully</span>
         </div>
       )}
       {showErrorNotification && (
