@@ -38,7 +38,7 @@ export default function PreOrder() {
 
     if (projectId) {
       // Fetch project data from the API
-      fetch(`https://api.shalomescort.org/project/project/${projectId}/`)
+      fetch(`https://api.donorsrec.chats.cash/project/project/${projectId}/`)
         .then((response) => {
           if (!response.ok) {
             throw new Error("Failed to fetch project data")
@@ -148,7 +148,7 @@ export default function PreOrder() {
                         <h5 className="mb-3 font-medium text-[#727272]">Total Vendors</h5>
                         <div className="flex items-end justify-between">
                           <div className="w-full border-b pb-2">
-                            <h5 className="text-3xl font-medium max-2xl:text-xl">1</h5>
+                            <h5 className="text-3xl font-medium max-2xl:text-xl">{totalVendors}</h5>
                           </div>
                         </div>
 
