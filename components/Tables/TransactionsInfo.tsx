@@ -62,10 +62,10 @@ const TransactionsInfo = () => {
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [expandedRow, setExpandedRow] = useState<number | null>(null) // Track which row is expanded
+  const [expandedRow, setExpandedRow] = useState<number | null>(null)
 
   const toggleRow = (index: number) => {
-    setExpandedRow((prev) => (prev === index ? null : index)) // Toggle expanded row
+    setExpandedRow((prev) => (prev === index ? null : index))
   }
 
   const router = useRouter()
@@ -83,37 +83,22 @@ const TransactionsInfo = () => {
         })
         .then((data) => {
           const projectData = data as Project
-
-          console.log("Fetched project data:", projectData)
-
-          // Use a Set to track unique names
           const uniqueNames = new Set<string>()
-
-          // Map through payments and extract orders
           const formattedOrders: Order[] = projectData.payments
             .map((payment) => {
               const beneficiary =
-                payment.beneficiarys && payment.beneficiarys.length > 0
-                  ? payment.beneficiarys[0] // Use the first beneficiary
-                  : null
-
-              // Check if first name and last name are the same
+                payment.beneficiarys && payment.beneficiarys.length > 0 ? payment.beneficiarys[0] : null
               const fullName =
                 beneficiary && beneficiary.first_name === beneficiary.last_name
-                  ? beneficiary.first_name // If the first name and last name are the same, only use first_name
+                  ? beneficiary.first_name
                   : `${beneficiary?.first_name} ${beneficiary?.last_name}`
 
-              // Check for duplicates
               if (fullName !== "N/A" && uniqueNames.has(fullName)) {
-                return null // Skip duplicate names
+                return null
               }
 
-              uniqueNames.add(fullName) // Add the name to the set
-
-              // Format date without time
-              const formattedDate = payment.date
-                ? new Date(payment.date).toLocaleDateString() // Only show the date (e.g., 27/12/2024)
-                : "N/A"
+              uniqueNames.add(fullName)
+              const formattedDate = payment.date ? new Date(payment.date).toLocaleDateString() : "N/A"
 
               return {
                 beneficiary: fullName,
@@ -122,13 +107,12 @@ const TransactionsInfo = () => {
                 vendor: payment.vendor_name || "N/A",
                 amount: `NGN${payment.amount || "0.00"}`,
                 status: payment.status ? "Completed" : "Pending",
-                date: formattedDate, // Update here
+                date: formattedDate,
                 products: payment.products || [],
               }
             })
-            .filter((order) => order !== null) as Order[] // Remove nulls from the result
+            .filter((order) => order !== null) as Order[]
 
-          console.log("Formatted orders without duplicates:", formattedOrders)
           setOrders(formattedOrders)
         })
         .catch((error) => {
@@ -141,6 +125,28 @@ const TransactionsInfo = () => {
       setLoading(false)
     }
   }, [])
+
+  const exportToCSV = () => {
+    const headers = ["Beneficiary", "Vendor", "Amount (NGN)", "Status", "Date", "Products"]
+    const rows = orders.map((order) => {
+      const products = order.products
+        .map((product) => `${product.name} (Qty: ${product.quantity}, Cost: ${product.amount})`)
+        .join("; ")
+      return [order.beneficiary, order.vendor, order.amount, order.status, order.date, products]
+    })
+
+    const csvContent = [headers.join(","), ...rows.map((row) => row.join(","))].join("\n")
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.setAttribute("href", url)
+    link.setAttribute("download", "transactions.csv")
+    link.style.visibility = "hidden"
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>{error}</p>
@@ -187,6 +193,9 @@ const TransactionsInfo = () => {
             <p className="text-sm">Filter by:</p>
             <p className="text-sm">Today</p>
             <RiArrowDownSLine />
+            <button onClick={exportToCSV} className="button-primary-two ml-4 rounded px-4 py-2">
+              Export to CSV
+            </button>
           </div>
         </div>
         <table className="w-full min-w-[800px] border-separate border-spacing-0 text-left">
@@ -238,14 +247,9 @@ const TransactionsInfo = () => {
           <tbody>
             {currentRows.map((order, index) => (
               <React.Fragment key={index}>
-                <tr
-                  className={index % 2 === 0 ? "bg-white" : "bg-[#FCFCFE]"} // Alternating row colors
-                >
+                <tr className={index % 2 === 0 ? "bg-white" : "bg-[#FCFCFE]"}>
                   <td className="whitespace-nowrap px-4 py-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      {/* <img src={order.image} /> */}
-                      {order.beneficiary}
-                    </div>
+                    <div className="flex items-center gap-2">{order.beneficiary}</div>
                   </td>
 
                   <td className="whitespace-nowrap px-4 py-2 text-sm">
@@ -274,7 +278,6 @@ const TransactionsInfo = () => {
                     </div>
                   </td>
                 </tr>
-                {/* Expanded row */}
                 {expandedRow === index && (
                   <tr className=" bg-[#F7F7F7]">
                     <td colSpan={6} className="p-4 text-sm ">
