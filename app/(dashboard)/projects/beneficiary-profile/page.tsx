@@ -1,7 +1,6 @@
 "use client"
 import DashboardNav from "components/Navbar/DashboardNav"
 import { Dash } from "utils"
-
 import ProjectInfo from "components/Tables/ProjectInfo"
 import { useRouter } from "next/navigation"
 import ProjectSummary from "components/Tables/ProjectSummary"
@@ -9,21 +8,77 @@ import TabTable from "app/(order)/orders/orders-by-model/page"
 import TransactionsInfo from "components/Tables/TransactionsInfo"
 import BeneProfile from "components/Tables/BeneficiaryProfile"
 import { BsArrowDownShort, BsArrowUpShort } from "react-icons/bs"
+import BeneficiaryTransactionInfo from "components/Tables/BeneficiaryTransactionInfo"
+import { useEffect, useState } from "react"
 
-interface PaymentAccount {
-  id: number
-  src: any
-  name: string
-  balance: string
-  action: string
+interface Beneficiary {
+  id: string
+  beneficiary_id: string
+  beneficiary_type: string
+  first_name: string
+  last_name: string
+  gender: string
+  dob: string
+  age: string
+  age2: string
+  category: string
+  location: string // JSON string; can be parsed into an object
+  created_at: string
+  status: boolean
+  pub_date: string
 }
 
 export default function BeneficiaryProfile() {
   const router = useRouter()
+  const [beneficiary, setBeneficiary] = useState<Beneficiary | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    // Retrieve the beneficiary ID from localStorage
+    const beneficiaryId = localStorage.getItem("beneficiaryId")
+
+    if (beneficiaryId) {
+      // Fetch beneficiary data from the API
+      fetch(`https://api.shalomescort.org/beneficiary/beneficiary/${beneficiaryId}/`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to fetch beneficiary data")
+          }
+          return response.json()
+        })
+        .then((data) => {
+          setBeneficiary(data as any) // Set the fetched beneficiary data
+        })
+        .catch((error) => {
+          setError("Error fetching beneficiary data")
+          console.error("Error:", error)
+        })
+        .finally(() => {
+          setLoading(false)
+        })
+    } else {
+      setError("Beneficiary ID not found in localStorage")
+      setLoading(false)
+    }
+  }, [])
 
   const handleGoBack = () => {
     router.back()
   }
+
+  if (loading) {
+    return <p className="text-center">Loading beneficiary data...</p>
+  }
+
+  if (error) {
+    return <p className="text-center text-red-500">{error}</p>
+  }
+
+  if (!beneficiary) {
+    return <p className="text-center">No beneficiary data found.</p>
+  }
+
   return (
     <section className="h-full w-full">
       <div className="flex min-h-screen w-full">
@@ -84,12 +139,13 @@ export default function BeneficiaryProfile() {
                     </div>
                   </div>
 
-                  <ProjectInfo />
-                  {/* <TabTable /> */}
-                  <TransactionsInfo />
+                  {/* <ProjectInfo /> */}
+
+                  <BeneficiaryTransactionInfo />
                 </div>
 
-                <BeneProfile />
+                {/* Pass the beneficiary data to the BeneProfile component */}
+                <BeneProfile beneficiary={beneficiary} />
               </div>
             </div>
           </div>

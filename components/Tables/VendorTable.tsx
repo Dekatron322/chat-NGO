@@ -1,5 +1,5 @@
-import React, { useState } from "react"
-import { RxCaretSort, RxCross2, RxDotsVertical } from "react-icons/rx"
+import React, { useEffect, useState } from "react"
+import { RxCaretSort, RxCheck, RxCross2 } from "react-icons/rx"
 import { PiShieldChevronFill, PiShieldPlusFill } from "react-icons/pi"
 import Image from "next/image"
 import { IoMdFunnel } from "react-icons/io"
@@ -7,32 +7,20 @@ import { IoFunnelOutline } from "react-icons/io5"
 import { FaCircleChevronLeft, FaCircleChevronRight } from "react-icons/fa6"
 import Select from "react-select"
 
-import { LiaTimesSolid } from "react-icons/lia"
-import { FiXCircle } from "react-icons/fi"
-import { FaRegCheckCircle } from "react-icons/fa"
-import Dropdown from "components/Dropdown/Dropdown"
 import { RiArrowDownSLine } from "react-icons/ri"
 import clsx from "clsx"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { MdOutlineCheckBoxOutlineBlank } from "react-icons/md"
+import CreatProjectModal from "components/Modals/CreateProject"
 
 type SortOrder = "asc" | "desc" | null
 type Order = {
-  program_id: string
-  beneficiary: string
-  phone_number: string
-  dob: string
-  verification: string
-  origination: string
+  id: string
+  name: string
+  user_id: string
   email: string
-  image: any
-  date: string
-}
-
-type OptionType = {
-  value: string
-  label: string
+  status: boolean
+  pub_date: string
 }
 
 const VendorTable = () => {
@@ -41,46 +29,46 @@ const VendorTable = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [currentPage, setCurrentPage] = useState(1)
   const [searchText, setSearchText] = useState("")
-  const [selectedOptions, setSelectedOptions] = useState<OptionType[]>([])
-
-  const [activeDropdown, setActiveDropdown] = useState<number | null>(null)
-
-  const toggleDropdown = (index: number) => {
-    setActiveDropdown(activeDropdown === index ? null : index)
-  }
+  const [orders, setOrders] = useState<Order[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [dropdownOpen, setDropdownOpen] = useState(false)
 
   const router = useRouter() // Initialize the router
 
-  const handleView = async (event: React.FormEvent<HTMLFormElement>) => {
-    // Redirect to the success page
-    router.push("/projects/project-info")
-  }
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await fetch("https://api.shalomescort.org/vendor/")
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`)
+        }
+        const data = (await response.json()) as Order[]
+        const formattedOrders = data.map((project: any) => ({
+          id: project.id,
+          name: project.name,
+          user_id: project.user_id || "N/A",
+          email: project.email || "N/A",
+          pub_date: new Date(project.pub_date).toLocaleDateString(),
+          status: project.status,
+        }))
 
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false)
+        // Update state only if there are changes
+        if (JSON.stringify(formattedOrders) !== JSON.stringify(orders)) {
+          setOrders(formattedOrders)
+        }
+      } catch (error: any) {
+        setError(error.message)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    // Initial fetch
+    fetchProjects()
+  }, [orders])
+
   const [isModalReminderOpen, setIsModalReminderOpen] = useState(false)
-
-  const handleCancelOrder = () => {
-    setIsModalOpen(true)
-  }
-
-  const handleStatusOrder = () => {
-    setIsStatusModalOpen(true)
-  }
-
-  const confirmStatusChange = () => {
-    console.log("Order canceled")
-    setIsStatusModalOpen(false)
-  }
-
-  const confirmCancellation = () => {
-    console.log("Order canceled")
-    setIsModalOpen(false)
-  }
-
-  const closeReminderModal = () => {
-    setIsModalReminderOpen(false)
-  }
 
   const handleCancelReminderOrder = () => {
     setIsModalReminderOpen(true)
@@ -91,105 +79,16 @@ const VendorTable = () => {
     setIsModalReminderOpen(false)
   }
 
-  const closeModal = () => {
-    setIsModalOpen(false)
-  }
-
-  const closeStatusModal = () => {
-    setIsStatusModalOpen(false)
-  }
-
-  const [orders, setOrders] = useState<Order[]>([
-    {
-      program_id: "1234567",
-      beneficiary: "Olivia Rhye",
-      phone_number: "+2348132205304",
-      dob: "4 April, 2001",
-      verification: "Verified",
-      origination: "Field Trip",
-      date: "4 April, 2001",
-      email: "karlkeller@gmail.com",
-      image: "/DashboardImages/Avatar copy.png",
-    },
-    {
-      program_id: "1234567",
-      beneficiary: "Olivia Rhye",
-      phone_number: "+2348132205304",
-      dob: "4 April, 2001",
-      verification: "Verified",
-      origination: "Field Trip",
-      date: "4 April, 2001",
-      email: "karlkeller@gmail.com",
-      image: "/DashboardImages/Avatar copy.png",
-    },
-    {
-      program_id: "1234567",
-      beneficiary: "Olivia Rhye",
-      phone_number: "+2348132205304",
-      dob: "4 April, 2001",
-      verification: "Unverified",
-      origination: "Field Trip",
-      date: "4 April, 2001",
-      email: "karlkeller@gmail.com",
-      image: "/DashboardImages/Avatar copy.png",
-    },
-    {
-      program_id: "1234567",
-      beneficiary: "Olivia Rhye",
-      phone_number: "+2348132205304",
-      dob: "4 April, 2001",
-      verification: "Verified",
-      origination: "Field Trip",
-      date: "4 April, 2001",
-      email: "karlkeller@gmail.com",
-      image: "/DashboardImages/Avatar copy.png",
-    },
-    {
-      program_id: "1234567",
-      beneficiary: "Olivia Rhye",
-      phone_number: "+2348132205304",
-      dob: "4 April, 2001",
-      verification: "Unverified",
-      origination: "Field Trip",
-      date: "4 April, 2001",
-      email: "karlkeller@gmail.com",
-      image: "/DashboardImages/Avatar copy.png",
-    },
-    {
-      program_id: "1234567",
-      beneficiary: "Olivia Rhye",
-      phone_number: "+2348132205304",
-      dob: "4 April, 2001",
-      verification: "Verified",
-      origination: "Field Trip",
-      date: "4 April, 2001",
-      email: "karlkeller@gmail.com",
-      image: "/DashboardImages/Avatar copy.png",
-    },
-  ])
-
-  const doorModelIcons: Record<string, React.ReactNode> = {
-    "Alima Core": <PiShieldChevronFill className="size-5" />,
-    "Alima Elite": <PiShieldPlusFill className="size-5" />,
-  }
-
-  const getPaymentStyle = (verification: string) => {
-    switch (verification) {
-      case "Verified":
-        return { backgroundColor: "#17CE89", color: "#ffffff" }
-      case "Unverified":
-        return { backgroundColor: "#F2994A", color: "#ffffff" }
-      default:
-        return {}
-    }
-  }
-
-  const dotStyle = (paymentStatus: string) => {
-    switch (paymentStatus) {
-      case "Service":
-        return { backgroundColor: "#026AA2" }
-      case "Product":
-        return { backgroundColor: "#363F72" }
+  const getPaymentStyle = (status: string) => {
+    switch (status) {
+      case "ONGOING":
+        return { backgroundColor: "#E2F1FD", color: "#53A6EB" }
+      case "ENDED":
+        return { backgroundColor: "#FAE8EE", color: "#E42C66" }
+      case "ACTIVE":
+        return { backgroundColor: "#EEFCF6", color: "#35C78A" }
+      case "PAUSE":
+        return { backgroundColor: "#E2F1FD", color: "#53A6EB" }
 
       default:
         return {}
@@ -218,6 +117,14 @@ const VendorTable = () => {
     Object.values(order).some((value) => value.toString().toLowerCase().includes(searchText.toLowerCase()))
   )
 
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>
+  }
+
   const indexOfLastRow = currentPage * rowsPerPage
   const indexOfFirstRow = indexOfLastRow - rowsPerPage
   const currentRows = filteredOrders.slice(indexOfFirstRow, indexOfLastRow)
@@ -234,34 +141,111 @@ const VendorTable = () => {
     setCurrentPage(1) // Reset to the first page
   }
 
+  const handleViewProject = (projectId: string) => {
+    // Store project ID in localStorage
+    localStorage.setItem("projectId", projectId)
+
+    // Redirect to /projects/project-info
+    router.push("/projects/project-info")
+  }
+
+  const toggleDropdown = () => {
+    setDropdownOpen((prev) => !prev)
+  }
+
+  const handleSort = (order: "asc" | "desc") => {
+    setSortOrder(order)
+    const sortedOrders = [...orders].sort((a, b) => {
+      const dateA = new Date(a.name).getTime()
+      const dateB = new Date(b.name).getTime()
+      return order === "asc" ? dateA - dateB : dateB - dateA
+    })
+    setOrders(sortedOrders)
+    setDropdownOpen(false) // Close the dropdown after selecting
+  }
+
   return (
     <div className="flex-3 relative  flex flex-col rounded-md ">
-      <div className="mt-6 w-full overflow-x-auto  bg-white shadow-md">
-        <table className="w-full min-w-[1000px] border-separate border-spacing-0 text-left">
+      <div className="flex items-center justify-between ">
+        <div className="flex gap-4">
+          <div className="flex h-[42px] w-[380px] items-center justify-between gap-3 rounded-md border border-[#707FA3] px-3 py-1 text-[#707070] max-2xl:w-[300px]">
+            <Image src="/DashboardImages/Search.svg" width={16} height={16} alt="Search Icon" />
+            <input
+              type="text"
+              id="search"
+              placeholder="Search"
+              className="h-[42px] w-full bg-transparent outline-none"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+            {searchText && <RxCross2 onClick={handleCancelSearch} style={{ cursor: "pointer" }} />}
+          </div>
+          <div className="relative">
+            <button
+              className="button-oulined flex h-12 items-center gap-2 border-[#707FA3]"
+              type="button"
+              onClick={toggleDropdown}
+            >
+              <IoMdFunnel />
+              <p>Sort By</p>
+            </button>
+            {dropdownOpen && (
+              <div className="absolute left-0 top-full z-10 mt-2 w-40 rounded-md border border-[#707FA3] bg-white shadow-md">
+                <button
+                  className={`flex w-full items-center justify-between px-4 py-2 text-left hover:bg-gray-100 ${
+                    sortOrder === "asc" ? "bg-gray-100 font-semibold" : ""
+                  }`}
+                  onClick={() => handleSort("asc")}
+                >
+                  Old to New
+                  {sortOrder === "asc" && <RxCheck className="text-lg" />}
+                </button>
+                <button
+                  className={`flex w-full items-center justify-between px-4 py-2 text-left hover:bg-gray-100 ${
+                    sortOrder === "desc" ? "bg-gray-100 font-semibold" : ""
+                  }`}
+                  onClick={() => handleSort("desc")}
+                >
+                  New to Old
+                  {sortOrder === "desc" && <RxCheck className="text-lg" />}
+                </button>
+              </div>
+            )}
+          </div>
+          <button className="button-oulined border-[#707FA3]" type="button">
+            <IoFunnelOutline />
+            <p>Filter</p>
+          </button>
+        </div>
+      </div>
+      <div className="my-8  w-40 border-b-3 border-b-[#17CE89] pb-2 text-center text-[#17CE89]">
+        <h1 className="text-lg font-semibold">Vendors</h1>
+      </div>
+      <div className="w-full overflow-x-auto rounded-[10px] bg-white ">
+        <div className="flex items-center justify-between px-5 py-4 text-[#25396F]">
+          <p className="text-lg">Projects</p>
+          <div className="flex items-center gap-3">
+            <p className="text-sm">Filter by:</p>
+
+            <p className="text-sm">Today</p>
+            <RiArrowDownSLine />
+          </div>
+        </div>
+        <table className="w-full min-w-[800px] border-separate border-spacing-0 text-left">
           <thead>
             <tr>
               <th
                 className="flex cursor-pointer items-center gap-2 whitespace-nowrap  bg-[#F7F7F7] p-4 text-sm"
-                onClick={() => toggleSort("program_id")}
+                onClick={() => toggleSort("name")}
               >
-                <MdOutlineCheckBoxOutlineBlank className="text-lg" />
-                ID <RxCaretSort />
-              </th>
-
-              <th
-                className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"
-                onClick={() => toggleSort("beneficiary")}
-              >
-                <p className="flex items-center gap-2">
-                  Beneficiary <RxCaretSort />
-                </p>
+                Name <RxCaretSort />
               </th>
               <th
                 className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"
-                onClick={() => toggleSort("phone_number")}
+                onClick={() => toggleSort("user_id")}
               >
                 <p className="flex items-center gap-2">
-                  Phone Number <RxCaretSort />
+                  Vendor ID <RxCaretSort />
                 </p>
               </th>
               <th
@@ -269,99 +253,25 @@ const VendorTable = () => {
                 onClick={() => toggleSort("email")}
               >
                 <p className="flex items-center gap-2">
-                  Email Address <RxCaretSort />
+                  Email <RxCaretSort />
                 </p>
               </th>
-              <th
-                className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"
-                onClick={() => toggleSort("dob")}
-              >
-                <p className="flex items-center gap-2">
-                  Date of Birth <RxCaretSort />
-                </p>
-              </th>
-              <th
-                className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"
-                onClick={() => toggleSort("verification")}
-              >
-                <p className="flex items-center gap-2">
-                  Verification <RxCaretSort />
-                </p>
-              </th>
-              <th
-                className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"
-                onClick={() => toggleSort("origination")}
-              >
-                <p className="flex items-center gap-2">
-                  Origination <RxCaretSort />
-                </p>
-              </th>
-              <th
-                className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"
-                onClick={() => toggleSort("date")}
-              >
-                <p className="flex items-center gap-2">
-                  Date <RxCaretSort />
-                </p>
-              </th>
-
-              <th className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"></th>
             </tr>
           </thead>
           <tbody className="text-[#25396F]">
             {currentRows.map((order, index) => (
               <tr
-                key={index}
+                key={order.id}
                 className={index % 2 === 0 ? "bg-white" : "bg-[#FCFCFE]"} // Alternating row colors
               >
-                <td className="whitespace-nowrap px-4 py-2 text-sm">
-                  <div className="flex items-center gap-2">
-                    <MdOutlineCheckBoxOutlineBlank className="text-lg" />
-                    {order.program_id}
-                  </div>
-                </td>
-
-                <td className="whitespace-nowrap px-4 py-3 text-sm">
-                  <div className="flex">
-                    <div className="flex items-center justify-center  gap-2 rounded-full px-2 py-1">
-                      <img src={order.image} />
-                      <p>{order.beneficiary}</p>
-                    </div>
-                  </div>
+                <td className="px-4 py-2 text-sm">
+                  <div className="flex items-center gap-2">{order.name}</div>
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm">
-                  <div className="flex items-center gap-2 pr-4">{order.phone_number}</div>
+                  <div className="flex items-center gap-2 pr-4">{order.user_id}</div>
                 </td>
                 <td className="whitespace-nowrap px-4 py-2 text-sm">
-                  <div className="flex items-center gap-2 pr-4">{order.email}</div>
-                </td>
-                <td className="whitespace-nowrap px-4 py-2 text-sm">
-                  <div className="flex items-center gap-2 pr-4">{order.dob}</div>
-                </td>
-
-                <td className="whitespace-nowrap px-4 py-3 text-sm">
-                  <div className="flex">
-                    <div
-                      style={getPaymentStyle(order.verification)}
-                      className="flex items-center justify-center gap-1 rounded-full px-2 py-1"
-                    >
-                      {order.verification}
-                    </div>
-                  </div>
-                </td>
-                <td className="whitespace-nowrap px-4 py-2 text-sm">
-                  <div className="flex items-center gap-2 pr-4">{order.origination}</div>
-                </td>
-                <td className="whitespace-nowrap px-4 py-2 text-sm">
-                  <div className="flex items-center gap-2 pr-4">{order.date}</div>
-                </td>
-
-                <td className="whitespace-nowrap px-4 py-1 text-sm">
-                  <div className="flex items-center  justify-end gap-2">
-                    <Link href="/projects/vendors-profile" className="flex items-center gap-2 text-[#17CE89] underline">
-                      View
-                    </Link>
-                  </div>
+                  <div className="flex items-center gap-2">{order.email}</div>
                 </td>
               </tr>
             ))}
@@ -387,20 +297,6 @@ const VendorTable = () => {
               <FaCircleChevronLeft />
             </button>
 
-            {/* <div className="flex items-center gap-2">
-              {Array.from({ length: totalPages }, (_, index) => (
-                <button
-                  key={index + 1}
-                  className={`flex h-[27px] w-[30px] items-center justify-center rounded-md ${
-                    currentPage === index + 1 ? "bg-[#000000] text-white" : "bg-gray-200 text-gray-800"
-                  }`}
-                  onClick={() => changePage(index + 1)}
-                >
-                  {index + 1}
-                </button>
-              ))}
-            </div> */}
-
             <p>
               Showing {currentPage} of {totalPages}
             </p>
@@ -416,29 +312,8 @@ const VendorTable = () => {
         </div>
       </div>
 
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="modal-style w-80 rounded-md p-4 shadow-md">
-            <div className="flex justify-between">
-              <h2 className="mb-4 text-lg font-medium">Cancel Order</h2>
-              <LiaTimesSolid onClick={closeModal} className="cursor-pointer" />
-            </div>
-            <div className="my-3 flex w-full items-center justify-center">
-              <img src="/DashboardImages/WarningCircle.png" alt="" />
-            </div>
-            <p className="mb-4 text-center text-xl font-medium">Are you sure you want to cancel this Order</p>
-            <div className="flex w-full justify-between gap-3">
-              <button className="button__primary flex w-full" onClick={confirmCancellation}>
-                <FaRegCheckCircle />
-                <p className="text-sm">Yes, Cancel</p>
-              </button>
-              <button className="button__danger w-full" onClick={closeModal}>
-                <FiXCircle />
-                <p className="text-sm">No, Leave</p>
-              </button>
-            </div>
-          </div>
-        </div>
+      {isModalReminderOpen && (
+        <CreatProjectModal isOpen={isModalReminderOpen} closeModal={() => setIsModalReminderOpen(false)} />
       )}
     </div>
   )

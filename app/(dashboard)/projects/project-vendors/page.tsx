@@ -50,27 +50,6 @@ export default function PreOrder() {
               <p className="text-sm">Go back</p>
             </button>
 
-            <div className="flex justify-between gap-4">
-              <div className="flex h-[48px] w-[380px] items-center justify-between gap-3 rounded-md border border-[#707FA3] px-3 py-1 text-[#707070] max-2xl:w-[300px]">
-                <Image src="/DashboardImages/Search.svg" width={16} height={16} alt="Search Icon" />
-                <input
-                  type="text"
-                  id="search"
-                  placeholder="Search"
-                  className="h-[46px] w-full bg-transparent outline-none"
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                />
-                {searchText && <RxCross2 onClick={handleCancelSearch} style={{ cursor: "pointer" }} />}
-              </div>
-
-              <div className="flex items-center gap-3">
-                <button className="flex items-center gap-2 rounded-md border border-[#17CE89] px-4 py-2 text-sm text-[#17CE89]">
-                  <img src="/DashboardImages/Cloud Import.png" />
-                  Import Vendors
-                </button>
-              </div>
-            </div>
             <div className="max-sm-my-4 flex w-full gap-6 max-md:flex-col max-md:px-0">
               <div className="flex w-full items-start gap-6">
                 <div className="flex w-full flex-col">

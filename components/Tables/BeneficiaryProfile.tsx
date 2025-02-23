@@ -2,7 +2,27 @@ import React from "react"
 import { RxDotsVertical } from "react-icons/rx"
 import clsx from "clsx"
 
-const BeneProfile = () => {
+interface Beneficiary {
+  id: string
+  beneficiary_id: string
+  beneficiary_type: string
+  first_name: string
+  last_name: string
+  gender: string
+  dob: string
+  age: string
+  age2: string
+  category: string
+  location: string // JSON string; can be parsed into an object
+  created_at: string
+  status: boolean
+  pub_date: string
+}
+interface BeneProfileProps {
+  beneficiary: Beneficiary
+}
+
+const BeneProfile: React.FC<BeneProfileProps> = ({ beneficiary }) => {
   return (
     <div className="w-full rounded-lg bg-white p-4 shadow-md xl:w-[400px]">
       <p className="text-center text-sm font-bold">Personal Details</p>
@@ -10,28 +30,30 @@ const BeneProfile = () => {
       <div className="mt-3  flex w-full flex-col items-center gap-2 rounded-lg border border-[#53DB92] p-3">
         <img src="/DashboardImages/Avatar copy 4.png" />
         <div className="flex items-center gap-3">
-          <p className="font-semibold text-[#25396F]">Hakeem Mensah</p>
+          <p className="font-semibold text-[#25396F]">
+            {beneficiary.first_name} {beneficiary.last_name}
+          </p>
           <img src="/DashboardImages/verify.png" />
         </div>
-        <p className="text-[#25396F]">ID: 00005</p>
+        <p className="text-[#25396F]">ID: {beneficiary.beneficiary_id}</p>
         <div className="flex w-full items-center justify-between rounded-[24px]  bg-[#FAFAFA] px-4 py-2">
-          <p className="text-sm text-[#25396F]">Phone Number</p>
-          <p className="text-sm text-[#25396F]">+2348132205304</p>
+          <p className="text-sm text-[#25396F]">Gender</p>
+          <p className="text-sm text-[#25396F]">{beneficiary.gender}</p>
         </div>
 
-        <div className="flex w-full items-center justify-between rounded-[24px]  bg-[#FAFAFA] px-4 py-2">
+        {/* <div className="flex w-full items-center justify-between rounded-[24px]  bg-[#FAFAFA] px-4 py-2">
           <p className="text-sm text-[#25396F]">Location</p>
-          <p className="text-sm text-[#25396F]">Ikeja, Lagos, Nigeria</p>
+          <p className="text-sm text-[#25396F]">{beneficiary.beneficiary_type}</p>
         </div>
 
         <div className="flex w-full items-center justify-between rounded-[24px]  bg-[#FAFAFA] px-4 py-2">
           <p className="text-sm text-[#25396F]">Email Address</p>
           <p className="text-sm text-[#25396F]">Karlkeller@gmail.com</p>
-        </div>
+        </div> */}
 
         <div className="flex w-full items-center justify-between rounded-[24px]  bg-[#FAFAFA] px-4 py-2">
-          <p className="text-sm text-[#25396F]">Created</p>
-          <p className="text-sm text-[#25396F]">12 Dec, 2020</p>
+          <p className="text-sm text-[#25396F]">DOB</p>
+          <p className="text-sm text-[#25396F]">{beneficiary.dob}</p>
         </div>
         <div className="flex w-full items-center justify-between rounded-[24px]  bg-[#FAFAFA] px-4 py-2">
           <p className="text-sm text-[#25396F]">Status</p>

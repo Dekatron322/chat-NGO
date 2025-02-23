@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { RxCaretSort, RxCross2 } from "react-icons/rx"
 import { FaCircleChevronLeft, FaCircleChevronRight } from "react-icons/fa6"
-
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { MdOutlineCheckBoxOutlineBlank } from "react-icons/md"
@@ -137,10 +136,14 @@ const Approved = () => {
   }
 
   const exportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(beneficiaries) // Convert JSON data to worksheet
-    const workbook = XLSX.utils.book_new() // Create a new workbook
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Beneficiaries") // Append the worksheet to the workbook
-    XLSX.writeFile(workbook, "beneficiaries.xlsx") // Save the workbook as an Excel file
+    const worksheet = XLSX.utils.json_to_sheet(beneficiaries)
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Beneficiaries")
+    XLSX.writeFile(workbook, "beneficiaries.xlsx")
+  }
+
+  const handleViewClick = (beneficiaryId: string) => {
+    localStorage.setItem("beneficiaryId", beneficiaryId)
   }
 
   return (
@@ -173,10 +176,6 @@ const Approved = () => {
             <p className=" text-lg font-semibold text-[#25396F]">Project Beneficiary</p>
           </div>
           <div className="flex items-center gap-3">
-            {/* <button className="flex items-center gap-2 rounded-md border border-[#17CE89] px-4 py-2 text-sm text-[#17CE89]">
-              <img src="/DashboardImages/Cloud Import.png" />
-              Import Beneficiaries
-            </button> */}
             <button
               onClick={exportToExcel}
               className="flex items-center gap-2 rounded-md border border-[#17CE89] bg-[#17CE89] px-4 py-2 text-sm  text-[#ffffff]"
@@ -208,22 +207,7 @@ const Approved = () => {
                     Beneficiary <RxCaretSort />
                   </p>
                 </th>
-                {/* <th
-                  className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"
-                  onClick={() => toggleSort("last_name")}
-                >
-                  <p className="flex items-center gap-2">
-                    Phone Number <RxCaretSort />
-                  </p>
-                </th>
-                <th
-                  className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"
-                  onClick={() => toggleSort("last_name")}
-                >
-                  <p className="flex items-center gap-2">
-                    Email Address <RxCaretSort />
-                  </p>
-                </th> */}
+
                 <th
                   className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"
                   onClick={() => toggleSort("age2")}
@@ -232,22 +216,7 @@ const Approved = () => {
                     Date of Birth <RxCaretSort />
                   </p>
                 </th>
-                {/* <th
-                  className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"
-                  onClick={() => toggleSort("verification")}
-                >
-                  <p className="flex items-center gap-2">
-                    Verification <RxCaretSort />
-                  </p>
-                </th> */}
-                {/* <th
-                  className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"
-                  onClick={() => toggleSort("location")}
-                >
-                  <p className="flex items-center gap-2">
-                    Origination <RxCaretSort />
-                  </p>
-                </th> */}
+
                 <th
                   className="cursor-pointer whitespace-nowrap bg-[#F7F7F7] p-4 text-sm"
                   onClick={() => toggleSort("created_at")}
@@ -282,29 +251,11 @@ const Approved = () => {
                       </div>
                     </div>
                   </td>
-                  {/* <td className="whitespace-nowrap px-4 py-2 text-sm">
-                    <div className="flex items-center gap-2 pr-4">phone</div>
-                  </td>
-                  <td className="whitespace-nowrap px-4 py-2 text-sm">
-                    <div className="flex items-center gap-2 pr-4">email</div>
-                  </td> */}
+
                   <td className="whitespace-nowrap px-4 py-2 text-sm">
                     <div className="flex items-center gap-2 pr-4">{order.dob}</div>
                   </td>
 
-                  {/* <td className="whitespace-nowrap px-4 py-3 text-sm">
-                  <div className="flex">
-                    <div
-                      style={getPaymentStyle(order.verification)}
-                      className="flex items-center justify-center gap-1 rounded-full px-2 py-1"
-                    >
-                      {order.verification}
-                    </div>
-                  </div>
-                </td> */}
-                  {/* <td className="whitespace-nowrap px-4 py-2 text-sm">
-                    <div className="flex items-center gap-2 pr-4">{order.location}</div>
-                  </td> */}
                   <td className="whitespace-nowrap px-4 py-2 text-sm">
                     <div className="flex items-center gap-2 pr-4">{order.created_at}</div>
                   </td>
@@ -314,6 +265,7 @@ const Approved = () => {
                       <Link
                         href="/projects/beneficiary-profile"
                         className="flex items-center gap-2 text-[#17CE89] underline"
+                        onClick={() => handleViewClick(order.id)}
                       >
                         View
                       </Link>
@@ -346,20 +298,6 @@ const Approved = () => {
             >
               <FaCircleChevronLeft />
             </button>
-
-            {/* <div className="flex items-center gap-2">
-              {Array.from({ length: totalPages }, (_, index) => (
-                <button
-                  key={index + 1}
-                  className={`flex h-[27px] w-[30px] items-center justify-center rounded-md ${
-                    currentPage === index + 1 ? "bg-[#000000] text-white" : "bg-gray-200 text-gray-800"
-                  }`}
-                  onClick={() => changePage(index + 1)}
-                >
-                  {index + 1}
-                </button>
-              ))}
-            </div> */}
 
             <p>
               Showing {currentPage} of {totalPages}
