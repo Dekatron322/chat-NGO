@@ -69,7 +69,7 @@ const BeneficiaryTransactionInfo = () => {
 
     if (beneficiaryId) {
       // Fetch transactions for the beneficiary using the new endpoint
-      fetch(`https://api.shalomescort.org/payment/filter/payments-by-beneficiary/${beneficiaryId}/filter/`)
+      fetch(`https://api.donorsrec.chats.cash/payment/filter/payments-by-beneficiary/${beneficiaryId}/filter/`)
         .then((response) => {
           if (!response.ok) {
             throw new Error("Failed to fetch transactions")

@@ -40,7 +40,7 @@ export default function BeneficiaryProfile() {
 
     if (beneficiaryId) {
       // Fetch beneficiary data from the API
-      fetch(`https://api.shalomescort.org/beneficiary/beneficiary/${beneficiaryId}/`)
+      fetch(`https://api.donorsrec.chats.cash/beneficiary/beneficiary/${beneficiaryId}/`)
         .then((response) => {
           if (!response.ok) {
             throw new Error("Failed to fetch beneficiary data")

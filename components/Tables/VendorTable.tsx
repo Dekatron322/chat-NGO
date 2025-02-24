@@ -39,7 +39,7 @@ const VendorTable = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await fetch("https://api.shalomescort.org/vendor/")
+        const response = await fetch("https://api.donorsrec.chats.cash/vendor/")
         if (!response.ok) {
           throw new Error(`Error: ${response.statusText}`)
         }
