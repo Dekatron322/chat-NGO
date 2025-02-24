@@ -19,7 +19,7 @@ interface Beneficiary {
   pub_date: string
 }
 interface BeneProfileProps {
-  beneficiary: Beneficiary
+  beneficiary?: Beneficiary
 }
 
 const BeneProfile: React.FC<BeneProfileProps> = ({ beneficiary }) => {
@@ -31,29 +31,19 @@ const BeneProfile: React.FC<BeneProfileProps> = ({ beneficiary }) => {
         <img src="/DashboardImages/Avatar copy 4.png" />
         <div className="flex items-center gap-3">
           <p className="font-semibold text-[#25396F]">
-            {beneficiary.first_name} {beneficiary.last_name}
+            {beneficiary?.first_name} {beneficiary?.last_name}
           </p>
           <img src="/DashboardImages/verify.png" />
         </div>
-        <p className="text-[#25396F]">ID: {beneficiary.beneficiary_id}</p>
+        <p className="text-[#25396F]">ID: {beneficiary?.beneficiary_id}</p>
         <div className="flex w-full items-center justify-between rounded-[24px]  bg-[#FAFAFA] px-4 py-2">
           <p className="text-sm text-[#25396F]">Gender</p>
-          <p className="text-sm text-[#25396F]">{beneficiary.gender}</p>
+          <p className="text-sm text-[#25396F]">{beneficiary?.gender}</p>
         </div>
-
-        {/* <div className="flex w-full items-center justify-between rounded-[24px]  bg-[#FAFAFA] px-4 py-2">
-          <p className="text-sm text-[#25396F]">Location</p>
-          <p className="text-sm text-[#25396F]">{beneficiary.beneficiary_type}</p>
-        </div>
-
-        <div className="flex w-full items-center justify-between rounded-[24px]  bg-[#FAFAFA] px-4 py-2">
-          <p className="text-sm text-[#25396F]">Email Address</p>
-          <p className="text-sm text-[#25396F]">Karlkeller@gmail.com</p>
-        </div> */}
 
         <div className="flex w-full items-center justify-between rounded-[24px]  bg-[#FAFAFA] px-4 py-2">
           <p className="text-sm text-[#25396F]">DOB</p>
-          <p className="text-sm text-[#25396F]">{beneficiary.dob}</p>
+          <p className="text-sm text-[#25396F]">{beneficiary?.dob}</p>
         </div>
         <div className="flex w-full items-center justify-between rounded-[24px]  bg-[#FAFAFA] px-4 py-2">
           <p className="text-sm text-[#25396F]">Status</p>
