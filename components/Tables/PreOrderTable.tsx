@@ -53,7 +53,7 @@ const PreOrderTable = () => {
           total_funded: project.total_funded || "N/A",
           amount_disbursed: project.amount_disbursed || "N/A",
           amount_spent: project.amount_spent || "N/A",
-          date: new Date(project.pub_date).toLocaleDateString(),
+          date: new Date(project.start_date).toLocaleDateString(),
           status: project.status,
         }))
 
